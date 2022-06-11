@@ -19,7 +19,11 @@ Route::get('/', function () {
 Route::get("/test",[\App\Http\Controllers\TestController::class,"test"])->name("test");
 Route::get("/show/{url}",[\App\Http\Controllers\TestController::class,"show"])->name("show");
 
-Route::middleware("auth")->resource("url",\App\Http\Controllers\UrlController::class);
+Route::get("/find/{url?}",[\App\Http\Controllers\UrlController::class,"show"])->name("show");
+
+Route::middleware("auth")->resource("url",\App\Http\Controllers\UrlController::class)
+->parameters(["url"=>"id"]);
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

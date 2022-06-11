@@ -20,3 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get("/test",function (){
 
 });
+
+Route::group(["prefix" => "/v1"],function (){
+    Route::post('test',function (Request $request){
+        return $request->all();
+    });
+    Route::resource("/shorter",\App\Http\Controllers\UrlApiController::class);
+});

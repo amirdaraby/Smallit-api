@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UrlRequest;
+use App\Models\Domain;
+use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 class UrlController extends Controller
 {
 
     public function index()
     {
-        $data = User::find(Auth::id())->with("url")->first();
-
+        $user_data = User::find(Auth::id())->first();
+        $url_data = ShortUrl::where("user_id","=",Auth::id())->with("domain")->first();
+        $data = [$user_data,$url_data];
+        return $data;
         return view("dashboard",["data"=>$data]);
     }
 
@@ -24,36 +29,46 @@ class UrlController extends Controller
         return view('create');
     }
 
-    public function generateShortUrl($length){
+    public static function generateShortUrl($length = 6)
+    {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $charactersLength = strlen($characters);
-            $randomString = '';
-            for ($i = 0; $i < $length; $i++) {
-                $randomString .= $characters[rand(0, $charactersLength - 1)];
-            }
-            return $randomString;
-
-
+        return substr(str_shuffle(str_repeat(Auth::id().$chars, $length)), 1, $length);
     }
 
+    public function FindOrNewDomain($url){
 
+        if (! Domain::where("url","=",$url)->first())
+        {
+            Domain::create([
+                "url"=>$url
+            ]);
+        }
+        return Domain::where("url","=",$url)->first()->id;
+
+    }
 
     public function store(UrlRequest $request)
     {
 
-        return $this->generateShortUrl($request->url);
-        Url::create([
-            "url" => $request->url,
-            "short_url"
+        ShortUrl::create([
+            "url"=>$this->generateShortUrl(),
+            "user_id"=>Auth::id(),
+            "domain_id"=>$this->FindOrNewDomain($request->url)
         ]);
 
+        return redirect(route("url.index"));
     }
 
 
-    public function show($id)
+    public function show($url = "")
     {
-        //
+
+        $url = Url::where("short_url","=",$url)->first();
+        if (! $url)
+            abort(404);
+
+        return redirect($url->url);
     }
 
 
@@ -69,8 +84,9 @@ class UrlController extends Controller
     }
 
 
-    public function destroy($id)
+    public function destroy($url)
     {
-        //
+        Url::destroy($url);
+        return redirect(route("url.index"));
     }
 }
