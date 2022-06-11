@@ -19,4 +19,7 @@ Route::get('/', function () {
 Route::get("/test",[\App\Http\Controllers\TestController::class,"test"])->name("test");
 Route::get("/show/{url}",[\App\Http\Controllers\TestController::class,"show"])->name("show");
 
-Route::resource("url",\App\Http\Controllers\UrlController::class);
+Route::middleware("auth")->resource("url",\App\Http\Controllers\UrlController::class);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
