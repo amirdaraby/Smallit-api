@@ -4,8 +4,8 @@
 
     <div class="space" style="height: 70px"></div>
     <section class="container">
-        <h4>name: {{$data->->name}}</h4>
-        @if(! count( $url_data ))
+        <h4>name: {{\Illuminate\Support\Facades\Auth::user()->name}}</h4>
+        @if(! count( $data ))
             <h1>empty</h1>
         @else
 
@@ -19,18 +19,19 @@
                     <th scope="col">Delete</th>
                 </tr>
                 </thead>
-            @foreach($url_data->shorturl as $url)
+                @php($i = 1)
+            @foreach($data as $item)
 
-@php($i = 1)
+
 
 
                 <tbody>
                 <tr>
                     <th scope="row">{{$i++}}</th>
-                    <td>{{$url->url}}</td>
-                    <td>{{$url->short_url}}</td>
+                    <td>{{$item->domain->url}}</td>
+                    <td>{{$item->url}}</td>
                     <td>
-                        <form method="post" action="{{route("url.destroy",["id"=>$url->id ])}}">
+                        <form method="post" action="{{route("url.destroy",["id"=>$item->id ])}}">
                             @method("delete")
                             @csrf
 

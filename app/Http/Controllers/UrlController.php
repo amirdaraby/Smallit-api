@@ -16,11 +16,9 @@ class UrlController extends Controller
 
     public function index()
     {
-        $user_data = User::find(Auth::id())->first();
-        $url_data = ShortUrl::where("user_id","=",Auth::id())->with("domain")->first();
-        $data = [$user_data,$url_data];
-        return $data;
-        return view("dashboard",["data"=>$data]);
+      $data = ShortUrl::where("user_id","=",Auth::id())->with("domain")->get();
+
+      return view("dashboard",["data"=>$data]);
     }
 
 
@@ -64,7 +62,8 @@ class UrlController extends Controller
     public function show($url = "")
     {
 
-        $url = Url::where("short_url","=",$url)->first();
+        $url = ShortUrl::where("url","=",$url)->with("domain")->get();
+        return $url;
         if (! $url)
             abort(404);
 
