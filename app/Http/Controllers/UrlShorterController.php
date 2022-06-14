@@ -16,7 +16,7 @@ class UrlShorterController extends Controller
 
     public function index()
     {
-
+        return ShortUrl::with("domain")->get();
     }
 
     public function FindOrNewDomain($url){
@@ -69,10 +69,10 @@ class UrlShorterController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return int
      */
-    public function destroy($id)
+    public function destroy(ShortUrl $url)
     {
-        //
+        return ShortUrl::destroy($url->id);
     }
 }
