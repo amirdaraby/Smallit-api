@@ -1,17 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UrlRequest;
 use App\Models\Domain;
 use App\Models\ShortUrl;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use phpDocumentor\Reflection\Types\AbstractList;
-use PhpParser\Node\Expr\New_;
-use function PHPUnit\Framework\isEmpty;
-
-class UrlShorterController extends Controller
+use \Illuminate\Database\Eloquent\ModelNotFoundException;
+class UrlShorterController extends BaseController
 {
 
     public function index()
@@ -47,9 +43,7 @@ class UrlShorterController extends Controller
 
     public function show(ShortUrl $url)
     {
-
-//         $domain = ShortUrl::find($url)->with("domain")->first();
-            return $url->domain->url;
+            return $this->success($url->domain->url,"ok" , 201);
     }
 
 

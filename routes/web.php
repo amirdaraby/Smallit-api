@@ -24,6 +24,5 @@ Route::get("/find/{url?}",[\App\Http\Controllers\UrlController::class,"show"])->
 Route::middleware("auth")->resource("url",\App\Http\Controllers\UrlController::class)
 ->parameters(["url"=>"id"]);
 
-Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
