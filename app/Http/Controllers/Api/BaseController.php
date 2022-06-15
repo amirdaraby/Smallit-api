@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Domain;
 use Illuminate\Http\Request;
 
 class BaseController extends Controller
@@ -13,10 +14,29 @@ class BaseController extends Controller
     }
 
 
-    public static function error( $message, $code = 422)
+    public static function error($message, $code = 422)
     {
         return response()->json(["status" => "error", "message" => $message], $code);
     }
 
+    /*
+     *
+     * Find Or New Domain
+     * returns Domain ID
+     *
+     */
+
+    public function FindOrNewDomain($url)
+    {
+        $domain = Domain::where("url", $url)->first();
+
+        if (!isset($domain)) {
+            $domain = Domain::create([
+                "url" => $url
+            ]);
+            return $domain->id;
+        } else return $domain->id;
+
+    }
 
 }
