@@ -1,0 +1,81 @@
+version: "3.7"
+networks:
+    laravel:
+
+services:
+    nginx:
+        image: dockerhub.ir/nginx
+        container_name: nginx-${PROJECT_NAME}
+        ports:
+            -   "8088:80"
+        volumes:
+            -   ./src:/var/www/html
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            -   php
+            - mysql
+        networks:
+            - laravel
+
+#    mysql:
+#        image: dockerhub.ir/mysql
+##        command: --default-authentication-plugin=mysql_native_password
+#        container_name: mysql-${PROJECT_NAME}
+#        restart: unless-stopped
+#        tty: true
+#
+#        ports:
+#            -   "3306:3306"
+#        volumes:
+#            -   ./mysql:/var/lib/mysql
+#        environment:
+##            MYSQL_DATABASE: ${MYSQL_DATABASE}
+##            MYSQL_USER: ${MYSQL_USER}
+##            MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+##            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+##            SERVICE_TAGS: ${SERVICE_TAGS}
+##            SERVICE_NAME: mysql
+#
+#        networks:
+#            - laravel
+
+
+    mysql:
+            image: dockerhub.ir/mariadb
+            container_name: mysql-${PROJECT_NAME}
+            ports:
+                - "3306:3306"
+            volumes:
+                - ~/apps/mariadb:/var/lib/mysql
+            environment:
+                - MYSQL_ROOT_PASSWORD=1234
+                - MYSQL_PASSWORD=1234
+                - MYSQL_USER=root
+                - MYSQL_DATABASE=${PROJECT_NAME}-db
+            networks:
+                - laravel
+            depends_on:
+                -   php
+
+
+
+
+    php:
+
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: php-${PROJECT_NAME}
+        volumes:
+            -   "./src:/var/www/html"
+        ports:
+            -   "9000:9000"
+
+        networks:
+            - laravel
+
+
+    composer:
+        container_name: composer-${PROJECT_NAME}
+        image: dockerhub.ir/composer
