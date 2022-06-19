@@ -19,7 +19,7 @@ class Url extends Model
 
 
     public function shorturl(){
-        return $this->hasMany(ShortUrl::class );
+        return $this->hasMany(ShortUrl::class);
     }
 
 

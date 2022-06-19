@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Domain;
+use Hashids\Hashids;
 use App\Models\Url;
 use Illuminate\Http\Request;
 
@@ -38,6 +38,13 @@ class BaseController extends Controller
             return $LongUrl->id;
         } else return $LongUrl->id;
 
+    }
+
+    public function short($url) {
+
+        $hashid = new Hashids();
+        $response =  $hashid->encodeHex($url);
+        return $response;
     }
 
 }

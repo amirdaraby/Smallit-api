@@ -16,9 +16,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(["prefix" => "/v1"],function (){
 
-    Route::resource("/url", \App\Http\Controllers\Api\UrlShorterController::class);
     Route::post("/login", [\App\Http\Controllers\Api\Auth\AuthController::class,"login"])->name("api.login");
     Route::post("/register", [\App\Http\Controllers\Api\Auth\AuthController::class,"register"])->name("api.register");
+
+
+    Route::group(["middleware" => "auth:sanctum"] , function (){
+        Route::resource("/url", \App\Http\Controllers\Api\UrlShorterController::class);
+    });
+
+
+
+
+
+
 
 
 //    Route::post('/register',[\App\Http\Controllers\AuthController::class,"register"])->name("api.register");
@@ -28,9 +38,7 @@ Route::group(["prefix" => "/v1"],function (){
 });
 
 
-Route::middleware('auth:sanctum')->get("/user", function (Request $request){
-    return $request->user();
-});
+
 
 
 

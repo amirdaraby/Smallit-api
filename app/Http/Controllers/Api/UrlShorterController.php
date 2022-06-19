@@ -10,13 +10,13 @@ use App\Models\Url;
 use Illuminate\Http\Request;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class UrlShorterController extends BaseController
 {
 
     public function index()
     {
-
 
         $data = ShortUrl::with("url")->get();
         if (!empty($data))
@@ -32,10 +32,11 @@ class UrlShorterController extends BaseController
     public function store(UrlRequest $request)
     {
 
+//            return auth()->user();
         $data = ShortUrl::create([
-            "short_url" => "abcefg",
+            "short_url" => Str::random(5),
             "url_id" => $this->FindOrNewUrl($request->url),
-            "user_id" => 1 // TODO change this
+            "user_id" => auth()->user()->id // TODO change this
         ]);
 //        return $data;
         return $this->success($data, "shorturl created", 201);
