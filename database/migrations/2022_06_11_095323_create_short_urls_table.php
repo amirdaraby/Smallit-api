@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('short_urls', function (Blueprint $table) {
             $table->id();
-            $table->string("url");
+            $table->string("short_url");
             $table->unsignedBigInteger("user_id");
             $table->foreign("user_id")->on("users")->references("id")
                 ->onDelete("cascade");
-            $table->unsignedBigInteger("domain_id");
-            $table->foreign("domain_id")->on("domains")->references("id")
+            $table->unsignedBigInteger("url_id");
+            $table->foreign("url_id")->on("urls")->references("id")
                 ->onDelete("cascade");
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Domain;
+use App\Models\Url;
 use Illuminate\Http\Request;
 
 class BaseController extends Controller
@@ -26,16 +27,16 @@ class BaseController extends Controller
      *
      */
 
-    public function FindOrNewDomain($url)
+    public function FindOrNewUrl($url)
     {
-        $domain = Domain::where("url", $url)->first();
+        $LongUrl = Url::where("url", $url)->first();
 
-        if (!isset($domain)) {
-            $domain = Domain::create([
+        if (!isset($LongUrl)) {
+            $LongUrl = Url::create([
                 "url" => $url
             ]);
-            return $domain->id;
-        } else return $domain->id;
+            return $LongUrl->id;
+        } else return $LongUrl->id;
 
     }
 

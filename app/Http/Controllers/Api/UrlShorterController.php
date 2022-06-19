@@ -4,17 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UrlRequest;
-use App\Models\Domain;
+//use App\Models\Domain;
 use App\Models\ShortUrl;
+use App\Models\Url;
 use Illuminate\Http\Request;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class UrlShorterController extends BaseController
 {
 
     public function index()
     {
-        $data = ShortUrl::with("domain")->get();
+
+
+        $data = ShortUrl::with("url")->get();
         if (!empty($data))
             return $this->success($data, "ok");
         else
@@ -29,10 +33,11 @@ class UrlShorterController extends BaseController
     {
 
         $data = ShortUrl::create([
-            "url" => "abcefg",
-            "domain_id" => $this->FindOrNewDomain($request->url),
+            "short_url" => "abcefg",
+            "url_id" => $this->FindOrNewUrl($request->url),
             "user_id" => 1 // TODO change this
         ]);
+//        return $data;
         return $this->success($data, "shorturl created", 201);
     }
 
@@ -42,7 +47,7 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url)
     {
-        return $this->success($url->domain->url, "ok");
+        return $this->success($url->url->url , "ok",201);
     }
 
 

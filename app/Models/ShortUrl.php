@@ -11,20 +11,16 @@ class ShortUrl extends Model
     protected $guarded = ["id"];
 
 
-    public function domain(){
-        return $this->belongsTo(Domain::class);
+    public function url(){
+
+        return $this->belongsTo(Url::class, "url_id");
     }
 
     public function getRouteKeyName()
     {
-        return "url";
+        return "short_url";
     }
 
-    public static function findOrCreate($id)
-    {
-        $obj = static::find($id);
-        return $obj ?: new static;
-    }
 
     public function user(){
         return $this->belongsTo(User::class);
