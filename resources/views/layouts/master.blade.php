@@ -10,7 +10,7 @@
 </head>
 <body>
         <section class="container">
-            @yield("content")
+            @yield("content_c")
         </section>
 </body>
 </html>

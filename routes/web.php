@@ -16,7 +16,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get("/test",[\App\Http\Controllers\TestController::class,"test"])->name("test");
-Route::get("/show/{url}",[\App\Http\Controllers\TestController::class,"show"])->name("show");
-
-Route::resource("url",\App\Http\Controllers\UrlController::class);
