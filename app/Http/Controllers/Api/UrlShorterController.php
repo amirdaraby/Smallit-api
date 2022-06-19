@@ -32,13 +32,12 @@ class UrlShorterController extends BaseController
     public function store(UrlRequest $request)
     {
 
-//            return auth()->user();
         $data = ShortUrl::create([
             "short_url" => Str::random(5),
             "url_id" => $this->FindOrNewUrl($request->url),
-            "user_id" => auth()->user()->id // TODO change this
+            "user_id" => auth()->user()->id
         ]);
-//        return $data;
+
         return $this->success($data, "shorturl created", 201);
     }
 
