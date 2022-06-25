@@ -2,8 +2,11 @@
 
 namespace App\Exceptions;
 
+use Faker\Provider\Base;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 use App\Http\Controllers\Api\BaseController;
 class Handler extends ExceptionHandler
@@ -54,5 +57,9 @@ class Handler extends ExceptionHandler
         if ($e instanceof ModelNotFoundException) {
             return BaseController::error( "record not found" , 404);
         }
+        if ($e instanceof AuthenticationException){
+            return  BaseController::error("Unauthorized" , 401);
+        }
+
     }
 }

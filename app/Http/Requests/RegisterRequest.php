@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             "name"=> "required|string",
-            "email"=> "required|string|email",
+            "email"=> "required|unique:users|string|email",
             "password"=> "required"
         ];
     }
@@ -36,4 +36,5 @@ class RegisterRequest extends FormRequest
     {
         throw new HttpResponseException((BaseController::error($validator->errors(), 422)));
     }
+
 }

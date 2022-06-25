@@ -20,7 +20,7 @@ class UrlShorterController extends BaseController
 
         $data = ShortUrl::with("url")->get();
         if (!empty($data))
-            return $this->success($data, "ok");
+            return $this->success($data, "ok",201);
         else
             return $this->error("record not found", 404);
     }
