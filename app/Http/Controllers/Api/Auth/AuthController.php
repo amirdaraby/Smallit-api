@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends BaseController
 {
@@ -24,6 +25,8 @@ class AuthController extends BaseController
 
     }
 
+
+
     public function register(RegisterRequest $request)
     {
 
@@ -39,5 +42,7 @@ class AuthController extends BaseController
             return $this->success($success, 'User registered');
 
     }
+
+
 
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\UrlRequest;
 //use App\Models\Domain;
 use App\Models\ShortUrl;
 use App\Models\Url;
+use App\Models\User;
 use Illuminate\Http\Request;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -17,12 +18,12 @@ class UrlShorterController extends BaseController
 
     public function index()
     {
+//dd("something");
 
-        $data = ShortUrl::with("url")->get();
-        if (!empty($data))
-            return $this->success($data, "ok",201);
-        else
-            return $this->error("record not found", 404);
+        $user =  Auth::user();
+        $short = ShortUrl::with("url")->where("user_id",Auth::user()->id)->get();
+
+        return $this->success(["user" => $user , "short" => $short],"User Data");
     }
 
     /**
@@ -39,6 +40,7 @@ class UrlShorterController extends BaseController
         ]);
 
         return $this->success($data, "shorturl created", 201);
+
     }
 
     /**
