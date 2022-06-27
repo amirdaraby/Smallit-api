@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
+
 //use App\Models\Domain;
 use App\Models\ShortUrl;
 use App\Models\Url;
@@ -20,26 +22,43 @@ class UrlShorterController extends BaseController
     {
 //dd("something");
 
-        $user =  Auth::user();
-        $short = ShortUrl::with("url")->where("user_id",Auth::user()->id)->get();
+        $user = Auth::user();
+        $short = ShortUrl::with("url")->where("user_id", Auth::user()->id)->get();
 
-        return $this->success(["user" => $user , "short" => $short],"User Data");
+        return $this->success(["user" => $user, "short" => $short], "User Data");
     }
+
+    /*
+     *
+     *
+     *  Sends User Data for web header
+     */
+
+
+
 
     /**
      * @param UrlRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return string
      */
     public function store(UrlRequest $request)
     {
 
-        $data = ShortUrl::create([
-            "short_url" => Str::random(5),
-            "url_id" => $this->FindOrNewUrl($request->url),
-            "user_id" => auth()->user()->id
-        ]);
+        global $data;
 
-        return $this->success($data, "shorturl created", 201);
+        for ($i = 0; $i < $request->count; $i++) {
+            $data [$i] = ShortUrl::create([
+                "short_url" => Str::random(5),
+                "url_id" => $this->FindOrNewUrl($request->url),
+                "user_id" => auth()->user()->id
+            ]);
+        }
+
+        if (count($data) == $request->count)
+            return $this->success($data, "ok", 200);
+        else
+            return $this->error("create failed", 500);
+
 
     }
 
@@ -49,7 +68,25 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url)
     {
-        return $this->success($url->url->url , "ok",201);
+        return $this->success($url->url->url, "ok", 201);
+    }
+
+    public function search(SearchRequest $request)
+    {
+        $short = ShortUrl::with("url")->where("user_id", Auth::user()->id)->get();
+        $data = [];
+        $i = 0;
+
+        foreach ($short as $item) {
+            if (preg_match("/.*$request->search.*/i", $item->url->url))
+                $data [$i++] = $item;
+        }
+
+        if ($data)
+            return $this->success($data, "ok");
+
+        else
+            return $this->error("not found", 404);
     }
 
 

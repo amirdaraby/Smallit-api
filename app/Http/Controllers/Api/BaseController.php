@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ShortUrl;
+use GuzzleHttp\Promise\Create;
 use Hashids\Hashids;
 use App\Models\Url;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BaseController extends Controller
 {
@@ -40,11 +43,6 @@ class BaseController extends Controller
 
     }
 
-    public function short($url) {
 
-        $hashid = new Hashids();
-        $response =  $hashid->encodeHex($url);
-        return $response;
-    }
 
 }

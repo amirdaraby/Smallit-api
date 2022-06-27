@@ -27,7 +27,8 @@ class UrlRequest extends FormRequest
     public function rules()
     {
         return [
-            "url" => ["required","url","regex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/"]
+            "url" => ["required","url","regex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/"],
+            "count" => ["required","between:1,50","int","integer"]
         ];
     }
 

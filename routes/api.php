@@ -20,9 +20,13 @@ Route::group(["prefix" => "/v1"],function (){
     Route::post("/register", [\App\Http\Controllers\Api\Auth\AuthController::class,"register"])->name("api.register");
     Route::post("/check",[\App\Http\Controllers\Api\Auth\AuthController::class,"CheckToken"])->name("api.check");
     Route::get("/url/show/{url}",[\App\Http\Controllers\Api\UrlShorterController::class,"show"])->name("api.show");
+
     Route::group(["middleware" => "auth:sanctum"] , function (){
         Route::get("/logout" , [\App\Http\Controllers\Api\Auth\AuthController::class,"logout"])->name("api.logout");
         Route::resource("/url", \App\Http\Controllers\Api\UrlShorterController::class)->except(["show"]);
+        Route::post("/url/search", [\App\Http\Controllers\Api\UrlShorterController::class,"search"])->name("api.search");
+        Route::get("/url/header" , [\App\Http\Controllers\Api\UrlShorterController::class,"header"])->name("api.header");
+
     });
 
 
