@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class UrlShorterController extends BaseController
@@ -23,18 +24,15 @@ class UrlShorterController extends BaseController
 //dd("something");
 
         $user = Auth::user();
-        $short = ShortUrl::with("url")->where("user_id", Auth::user()->id)->get();
+//        $url = ShortUrl::select("url_id")->where("user_id",$user->id);
 
-        return $this->success(["user" => $user, "short" => $short], "User Data");
+       $url = ShortUrl::with("url")->select("url_id", DB::raw('count(*) as count'))
+            ->where("user_id",$user->id)->groupBy('url_id')
+            ->orderBy("COUNT","desc")->get();
+
+
+        return $this->success(["user" => $user, "url" => $url], "User Data");
     }
-
-    /*
-     *
-     *
-     *  Sends User Data for web header
-     */
-
-
 
 
     /**
@@ -77,8 +75,12 @@ class UrlShorterController extends BaseController
         $data = [];
         $i = 0;
 
+
         foreach ($short as $item) {
-            if (preg_match("/.*$request->search.*/i", $item->url->url))
+            if (preg_match("/.*http.*/i", $item->url->url))
+                if ($request->search == $item->url->url)
+                $data [$i++] = $item;
+            elseif ($request->search == $item->url->url)
                 $data [$i++] = $item;
         }
 

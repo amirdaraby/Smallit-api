@@ -23,6 +23,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Http\\Requests\\LoginRequest' => $baseDir . '/app/Http/Requests/LoginRequest.php',
     'App\\Http\\Requests\\RegisterRequest' => $baseDir . '/app/Http/Requests/RegisterRequest.php',
+    'App\\Http\\Requests\\SearchRequest' => $baseDir . '/app/Http/Requests/SearchRequest.php',
     'App\\Http\\Requests\\UrlRequest' => $baseDir . '/app/Http/Requests/UrlRequest.php',
     'App\\Http\\Resources\\ShortUrl' => $baseDir . '/app/Http/Resources/ShortUrl.php',
     'App\\Models\\ShortUrl' => $baseDir . '/app/Models/ShortUrl.php',

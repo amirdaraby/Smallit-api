@@ -9,6 +9,7 @@ use Hashids\Hashids;
 use App\Models\Url;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Collection;
 
 class BaseController extends Controller
 {
@@ -42,6 +43,8 @@ class BaseController extends Controller
         } else return $LongUrl->id;
 
     }
+
+
 
 
 
