@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\FindRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 
-//use App\Models\Domain;
 use App\Models\ShortUrl;
 use App\Models\Url;
-use App\Models\User;
 use Illuminate\Http\Request;
-use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -21,14 +18,13 @@ class UrlShorterController extends BaseController
 
     public function index()
     {
-//dd("something");
 
         $user = Auth::user();
 //        $url = ShortUrl::select("url_id")->where("user_id",$user->id);
 
-       $url = ShortUrl::with("url")->select("url_id", DB::raw('count(*) as count'))
-            ->where("user_id",$user->id)->groupBy('url_id')
-            ->orderBy("COUNT","desc")->get();
+        $url = ShortUrl::with("url")->select("url_id", DB::raw('count(*) as count'))
+            ->where("user_id", $user->id)->groupBy('url_id')
+            ->orderBy("COUNT", "desc")->get();
 
 
         return $this->success(["user" => $user, "url" => $url], "User Data");
@@ -55,7 +51,8 @@ class UrlShorterController extends BaseController
         if (count($data) == $request->count)
             return $this->success($data, "ok", 200);
         else
-            return $this->error("create failed", 500);
+            ddd($data);
+//            return $this->error("create failed", 500);
 
 
     }
@@ -69,6 +66,23 @@ class UrlShorterController extends BaseController
         return $this->success($url->url->url, "ok", 201);
     }
 
+    public function find(FindRequest $request)
+    {
+        $user = Auth::user();
+        $url = Url::select("id")->where("url", $request->find)->first();
+        $url_id = $url->id;
+
+
+        $short = ShortUrl::with("url")->where("user_id", $user->id)->where("url_id", 5)->get();
+
+        if ($short-)
+            return $this->success($short, "Url data", 201);
+        else
+            return $this->error("Not Found", 404);
+
+    }
+
+
     public function search(SearchRequest $request)
     {
         $short = ShortUrl::with("url")->where("user_id", Auth::user()->id)->get();
@@ -79,9 +93,9 @@ class UrlShorterController extends BaseController
         foreach ($short as $item) {
             if (preg_match("/.*http.*/i", $item->url->url))
                 if ($request->search == $item->url->url)
-                $data [$i++] = $item;
-            elseif ($request->search == $item->url->url)
-                $data [$i++] = $item;
+                    $data [$i++] = $item;
+                elseif ($request->search == $item->url->url)
+                    $data [$i++] = $item;
         }
 
         if ($data)
@@ -91,6 +105,13 @@ class UrlShorterController extends BaseController
             return $this->error("not found", 404);
     }
 
+
+    public function test()
+    {
+        $short = ShortUrl::all();
+
+
+    }
 
     /**
      * Update the specified resource in storage.

@@ -14,6 +14,7 @@ class AuthController extends BaseController
     public function login(Request $request)
     {
 
+
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $auth = Auth::user();
             $success['token'] = $auth->createToken('LaravelSanctumAuth')->plainTextToken;
@@ -29,6 +30,7 @@ class AuthController extends BaseController
 
     public function register(RegisterRequest $request)
     {
+
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);

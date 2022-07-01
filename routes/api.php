@@ -26,9 +26,9 @@ Route::group(["prefix" => "/v1"],function (){
         Route::resource("/url", \App\Http\Controllers\Api\UrlShorterController::class)->except(["show"]);
         Route::post("/url/search", [\App\Http\Controllers\Api\UrlShorterController::class,"search"])->name("api.search");
         Route::get("/url/header" , [\App\Http\Controllers\Api\UrlShorterController::class,"header"])->name("api.header");
+        Route::post("/url/find/" , [\App\Http\Controllers\Api\UrlShorterController::class,"find"])->name("api.find");
 
     });
-
 
 
 
