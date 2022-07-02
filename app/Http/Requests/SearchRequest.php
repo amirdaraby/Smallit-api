@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\Api\BaseController;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SearchRequest extends FormRequest
 {
@@ -24,7 +27,11 @@ class SearchRequest extends FormRequest
     public function rules()
     {
         return [
-            "search" => "required"
+            "search" => "required|string"
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException((BaseController::error($validator->errors(), 422)));
     }
 }

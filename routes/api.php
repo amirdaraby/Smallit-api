@@ -18,7 +18,7 @@ Route::group(["prefix" => "/v1"],function (){
 
     Route::post("/login", [\App\Http\Controllers\Api\Auth\AuthController::class,"login"])->name("api.login");
     Route::post("/register", [\App\Http\Controllers\Api\Auth\AuthController::class,"register"])->name("api.register");
-    Route::post("/check",[\App\Http\Controllers\Api\Auth\AuthController::class,"CheckToken"])->name("api.check");
+    Route::get("/show/{url}" , [\App\Http\Controllers\Api\UrlShorterController::class,"show"])->name("api.show");
 
     Route::group(["middleware" => "auth:sanctum"] , function (){
         Route::get("/logout" , [\App\Http\Controllers\Api\Auth\AuthController::class,"logout"])->name("api.logout");
