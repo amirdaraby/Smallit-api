@@ -24,7 +24,7 @@ class FindRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "find"=>"required"
         ];
     }
 }

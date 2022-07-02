@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use function PHPUnit\Framework\isEmpty;
 
 class UrlShorterController extends BaseController
 {
@@ -72,10 +73,12 @@ class UrlShorterController extends BaseController
         $url = Url::select("id")->where("url", $request->find)->first();
         $url_id = $url->id;
 
+        $short = ShortUrl::where([
+            ["url_id","=",$url_id],["user_id","=",$user->id]
+        ])->get();
 
-        $short = ShortUrl::with("url")->where("user_id", $user->id)->where("url_id", 5)->get();
 
-        if ($short-)
+        if (! empty($short) )
             return $this->success($short, "Url data", 201);
         else
             return $this->error("Not Found", 404);
