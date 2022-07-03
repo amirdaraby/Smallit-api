@@ -21,7 +21,7 @@ class BaseController extends Controller
 
     public static function error($message, $code = 422)
     {
-        return response()->json(["status" => "error", "message" => $message],$code);
+        return response()->json(["status" => "error", "message" => $message], $code);
     }
 
     /*
@@ -31,7 +31,7 @@ class BaseController extends Controller
      *
      */
 
-    public function FindOrNewUrl($url)
+    public function FindOrNewUrl($url) : string
     {
         $LongUrl = Url::where("url", $url)->first();
 
@@ -44,8 +44,14 @@ class BaseController extends Controller
 
     }
 
+    public function regexUrl($url) : bool
+    {
 
+        if (  preg_match("/\/+$/m",$url ))
+            return 0;
+            return 1;
 
+    }
 
 
 }

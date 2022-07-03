@@ -17,6 +17,13 @@ use function PHPUnit\Framework\isEmpty;
 class UrlShorterController extends BaseController
 {
 
+    public function test(Request $request){
+
+       return $this->regexUrl($request->url);
+
+    }
+
+
     public function index()
     {
 
@@ -38,10 +45,15 @@ class UrlShorterController extends BaseController
      */
     public function store(UrlRequest $request)
     {
+        $url = $request->url;
+
+        if ($this->regexUrl($url))
+            $url = $url."/";
 
         global $data;
-        $short_url_id = $this->FindOrNewUrl($request->url);
+        $short_url_id = $this->FindOrNewUrl($url);
         $user_id = Auth::user()->id;
+
 
         for ($i = 0; $i < $request->count; $i++) {
             $data [$i] = [
@@ -86,7 +98,7 @@ class UrlShorterController extends BaseController
 
         if (!empty($short))
             return $this->success($short, "Url data", 201);
-        else
+
             return $this->error("Not Found", 404);
 
     }
@@ -94,28 +106,19 @@ class UrlShorterController extends BaseController
 
     public function search(SearchRequest $request)
     {
-        // TODO FIX THIS
-        // error not working
+
         $user_id = Auth::user()->id;
-        $url_id  = Url::select("id")->where("url","LIKE","%$request->search%")->first();
-        $url_id  = $url_id->id;
+        $url_id  = Url::select("id")->where("url","LIKE","%$request->search%")->get();
 
-        $data = ShortUrl::with("url")->where([["url_id",$url_id],["user_id",$user_id]])->get();
+        $data = ShortUrl::with("url")->where("user_id" , $user_id )->whereIn("url_id",$url_id)->orderBy("created_at" , "desc")->get();
+        $count = count($data);
 
-        if(! empty($data))
-            return $this->success($data, "ok");
-
-        else
-            return $this->error("not found");
+        if ( count($data) == 0)
+            return $this->error("Not found");
+            return $this->success( ["data" => $data, "count" => $count]  , "data found");
     }
 
 
-    public function test()
-    {
-        $short = ShortUrl::all();
-
-
-    }
 
     /**
      * Update the specified resource in storage.
@@ -132,6 +135,6 @@ class UrlShorterController extends BaseController
 
     public function destroy(ShortUrl $url)
     {
-        return $this->success(ShortUrl::destroy($url->id), "data deleted", 202);
+        return $url;
     }
 }
