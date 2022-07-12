@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v1.0] 2022-07-03
 [v1.0]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.0
+### Added
 ### Fixed
 - Validation Fixed
 - Insert Query Fixed
@@ -20,6 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v0.7] 2022-06-26
 [v0.7]:https://github.com/amirdaraby/url-shortener/releases/tag/v0.7
+### Added
 ### Fixed
 - Auth Exception Fixed
 - Api Error Handling Fixed
@@ -46,13 +48,14 @@ All notable changes to this project will be documented in this file.
 [v0.1.1]:https://github.com/amirdaraby/url-shortener/releases/tag/v0.1.1
 ### Added
 - Exceptions Added
+### Fixed
 
 
 ## [v0.1] 2022-06-11
 [v0.1]:https://github.com/amirdaraby/url-shortener/releases/tag/v0.1
 ### Added
 - Api Controller Added
-
+### Fixed
 
 ## [v0.0] 2022-06-10
 ### Project Started
