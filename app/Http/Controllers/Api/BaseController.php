@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ShortUrl;
 use GuzzleHttp\Promise\Create;
-use Hashids\Hashids;
+//use Hashids\Hashids;
 use App\Models\Url;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -13,13 +13,13 @@ use phpDocumentor\Reflection\Types\Collection;
 
 class BaseController extends Controller
 {
-    public static function success($data, $message, $code = 200)
+    public static function success($data, $message, $code = 200): object
     {
         return response()->json(["status" => "ok", 'data' => $data, "message" => $message], $code);
     }
 
 
-    public static function error($message, $code = 422)
+    public static function error($message, $code = 422): object
     {
         return response()->json(["status" => "error", "message" => $message], $code);
     }
@@ -31,7 +31,7 @@ class BaseController extends Controller
      *
      */
 
-    public function FindOrNewUrl($url) : string
+    public function FindOrNewUrl($url): string
     {
         $LongUrl = Url::where("url", $url)->first();
 
@@ -44,12 +44,12 @@ class BaseController extends Controller
 
     }
 
-    public function regexUrl($url) : bool
+    public function regexUrl($url): bool
     {
 
-        if (  preg_match("/\/+$/m",$url ))
+        if (preg_match("/\/+$/m", $url))
             return 0;
-            return 1;
+        return 1;
 
     }
 
