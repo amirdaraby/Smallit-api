@@ -2,13 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unrelased] 2022-07-dd
-- Add user-agent data to dashboard
+- Add clicks information to dashboard
 
 ## [Unrelased] 2022-07-dd
 - Fix Click count spam
 
-## [Unrelased] 2022-07-14
-- Add Click counter 
+## [v1.1.0] 2022-07-14
+[v1.1.0]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.0
+### Added
+- Counting clicks for short urls
+### Fixed
 
 ## [v1.0] 2022-07-03
 [v1.0]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.0
@@ -69,3 +72,4 @@ All notable changes to this project will be documented in this file.
 ## [v0.0] 2022-06-10
 ### Project Started
 [v0.0]:https://github.com/amirdaraby/url-shortener/releases/tag/v0.0
+
