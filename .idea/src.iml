@@ -116,6 +116,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/ignition" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-ignition" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/backtrace" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/maximebf/debugbar" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

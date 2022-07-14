@@ -6,6 +6,7 @@ use App\Http\Requests\FindRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 
+use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use Illuminate\Http\Request;
@@ -25,9 +26,9 @@ class UrlShorterController extends BaseController
 
 
         return $this->success([
-            "OS" => AgentController::getOs($request->header("user-agent")),
-            "browser" => AgentController::getBrowser($request->header("user-agent")),
-            "uid" => $request->header("uid"),
+            "OS"        => AgentController::getOs($request->header("user-agent")),
+            "browser"   => AgentController::getBrowser($request->header("user-agent")),
+            "uid"       => $request->header("uid"),
             "userAgent" => $request->header("user-agent")
         ], "ok");
 //            return $this->get_browser_name($request->header("user-agent"));
@@ -44,9 +45,10 @@ class UrlShorterController extends BaseController
         $user = Auth::user();
 //        $url = ShortUrl::select("url_id")->where("user_id",$user->id);
 
+
         $url = ShortUrl::with("url")->select("url_id", DB::raw('count(*) as count'))
             ->where("user_id", $user->id)->groupBy('url_id')
-            ->orderBy("COUNT", "desc")->get();
+            ->orderBy("count", "desc")->get();
 
         if ($url)
             return $this->success(["user" => $user, "url" => $url], "user's shorturl data");
@@ -74,8 +76,8 @@ class UrlShorterController extends BaseController
         for ($i = 0; $i < $request->count; $i++) {
             $data [$i] = [
                 "short_url" => Str::random(5),
-                "url_id" => $short_url_id,
-                "user_id" => $user_id
+                "url_id"    => $short_url_id,
+                "user_id"   => $user_id
             ];
         }
 //        dd($data);
@@ -97,6 +99,11 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url): object
     {
+        Click::create(
+            [
+                "short_id" => $url->id,
+            ]
+        ); // TODO add this to basecontroller
         return $this->success($url->url->url, "ok", 201);
     }
 
@@ -106,9 +113,11 @@ class UrlShorterController extends BaseController
         $url = Url::select("id")->where("url", $request->find)->first();
         $url_id = $url->id;
 
-        $short = ShortUrl::where([
-            ["url_id", "=", $url_id], ["user_id", "=", $user->id]
-        ])->get();
+        $short = ShortUrl::
+            where([
+                ["url_id", "=", $url_id], ["user_id", "=", $user->id]
+            ])
+            ->get();
 
 
         if (!empty($short))
