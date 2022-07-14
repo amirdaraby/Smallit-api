@@ -27,6 +27,7 @@ class AgentController extends Controller
             '/win98/i'              => 'Windows',
             '/win95/i'              => 'Windows',
             '/win16/i'              => 'Windows',
+            '/windows phone/i'      => 'Windows Phone',
             '/macintosh|mac os x/i' => 'Mac OS',
             '/mac_powerpc/i'        => 'Mac OS',
             '/linux/i'              => 'Linux',
@@ -60,6 +61,7 @@ class AgentController extends Controller
         elseif (strpos($t, 'opera') || strpos($t, 'opr/')) return 'Opera';
         elseif (strpos($t, 'safari')) return 'Safari';
         elseif (strpos($t, 'firefox')) return 'Firefox';
+//        elseif (strpos($t,''))
 //        elseif (strpos($t, 'tor')) return 'Tor';
         elseif (strpos($t, 'msie') || strpos($t, 'trident/7')) return 'Internet Explorer';
         return 'Unknown';

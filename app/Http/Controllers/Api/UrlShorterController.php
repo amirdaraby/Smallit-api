@@ -26,9 +26,10 @@ class UrlShorterController extends BaseController
 
         return $this->success([
             "OS" => AgentController::getOs($request->header("user-agent")),
-            "browser"=>AgentController::getBrowser($request->header("user-agent")),
-            "uid" => $request->header("uid")
-        ],"ok");
+            "browser" => AgentController::getBrowser($request->header("user-agent")),
+            "uid" => $request->header("uid"),
+            "userAgent" => $request->header("user-agent")
+        ], "ok");
 //            return $this->get_browser_name($request->header("user-agent"));
 //        return $request->header("user-agent");
 //        return $this->success(get_browser($request->header("user-agent")),"ok",201);
@@ -80,8 +81,7 @@ class UrlShorterController extends BaseController
 //        dd($data);
 
         $data = ShortUrl::insert($data);
-
-        return $data;
+        dd($data);
         if ($data)
             return $this->success($data, "ok", 200);
         else
