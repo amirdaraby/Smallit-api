@@ -7,8 +7,9 @@ All notable changes to this project will be documented in this file.
 ## [Unrelased] 2022-07-dd
 - Fix Click count spam
 
+
 ## [v1.1.0] 2022-07-14
-[v1.1.0]: https://github.com/amirdaraby/url-shortener/releases/tag/v.1.1.0
+[v1.1.0]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.0
 ### Added
 - Counting clicks for short urls
 ### Fixed
