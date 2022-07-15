@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Click extends Model
 {
-    use HasFactory;
+//    use HasFactory;
     protected $guarded = ['id'];
 
 
     public function shorturl (){
         $this->belongsTo(ShortUrl::class,"short_id");
     }
+
+
+
 
 }

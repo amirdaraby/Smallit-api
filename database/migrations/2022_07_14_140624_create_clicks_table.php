@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreign("short_id")->on("short_urls")
                 ->references("id")
                 ->onDelete("cascade");
+
+
             $table->timestamps();
         });
     }

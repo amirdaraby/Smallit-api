@@ -29,8 +29,9 @@ class ShortUrl extends Model
 
 
     public function click(){
-        return $this->hasMany(Click::class);
+        return $this->hasMany(Click::class,"short_id");
     }
+
 
 
 }

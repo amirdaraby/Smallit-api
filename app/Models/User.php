@@ -41,7 +41,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function shorturl(){
-        return $this->hasMany(ShortUrl::class);
+
+    public function shorturl()
+    {
+        return $this->hasMany(ShortUrl::class, "user_id");
     }
+
+    public function click()
+    {
+        return $this->hasManyThrough(Click::class, ShortUrl::class,
+            "user_id",
+            "short_id"
+        );
+    }
+
 }

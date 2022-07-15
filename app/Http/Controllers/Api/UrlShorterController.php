@@ -9,6 +9,7 @@ use App\Http\Requests\UrlRequest;
 use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,10 +21,22 @@ use function PHPUnit\Framework\isEmpty;
 class UrlShorterController extends BaseController
 {
 
+    public function clickTest(){
+
+            $short = User::with(["shorturl" => function($q){
+                $q->withCount("click");
+            }])
+                ->get();
+
+
+        return $short;
+
+    }
+
 
     public function test(Request $request)
-    { // TODO add fingerprint js
-
+    {
+        // TODO add fingerprint js
 
         return $this->success([
             "OS"        => AgentController::getOs($request->header("user-agent")),
@@ -49,6 +62,8 @@ class UrlShorterController extends BaseController
         $url = ShortUrl::with("url")->select("url_id", DB::raw('count(*) as count'))
             ->where("user_id", $user->id)->groupBy('url_id')
             ->orderBy("count", "desc")->get();
+
+
 
         if ($url)
             return $this->success(["user" => $user, "url" => $url], "user's shorturl data");
@@ -83,7 +98,7 @@ class UrlShorterController extends BaseController
 //        dd($data);
 
         $data = ShortUrl::insert($data);
-        dd($data);
+
         if ($data)
             return $this->success($data, "ok", 200);
         else
@@ -102,6 +117,7 @@ class UrlShorterController extends BaseController
         Click::create(
             [
                 "short_id" => $url->id,
+                "user_id"  => $url->user_id
             ]
         ); // TODO add this to basecontroller
         return $this->success($url->url->url, "ok", 201);
@@ -109,6 +125,7 @@ class UrlShorterController extends BaseController
 
     public function find(FindRequest $request): object
     {
+
         $user = Auth::user();
         $url = Url::select("id")->where("url", $request->find)->first();
         $url_id = $url->id;
@@ -117,6 +134,8 @@ class UrlShorterController extends BaseController
             where([
                 ["url_id", "=", $url_id], ["user_id", "=", $user->id]
             ])
+            ->withCount("click")
+            ->orderBy("click_count", "desc")
             ->get();
 
 
