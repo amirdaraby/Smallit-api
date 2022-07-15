@@ -21,16 +21,16 @@ use function PHPUnit\Framework\isEmpty;
 class UrlShorterController extends BaseController
 {
 
-    public function clickTest(){
+    public function clickTest()
+    {
 
-            $short = User::with(["shorturl" => function($q){
-                $q->withCount("click");
-            }])
-                ->get();
+        $short = User::with(["shorturl" => function ($q) {
+            $q->withCount("click");
+        }])
+            ->get();
 
 
         return $short;
-
     }
 
 
@@ -55,14 +55,18 @@ class UrlShorterController extends BaseController
     public function index(): object
     {
 
-        $user = Auth::user();
+
 //        $url = ShortUrl::select("url_id")->where("user_id",$user->id);
 
+        $user = Auth::user();
 
-        $url = ShortUrl::with("url")->select("url_id", DB::raw('count(*) as count'))
+        $url = ShortUrl::with(["url" => function ($q) use ($user) {
+            $q->select("id", "url")->withCount(["shorturl" => function ($q) use ($user) {
+                $q->where("user_id", $user->id);
+            }]);
+        }])->select("url_id")
             ->where("user_id", $user->id)->groupBy('url_id')
-            ->orderBy("count", "desc")->get();
-
+            ->get();
 
 
         if ($url)
@@ -131,9 +135,9 @@ class UrlShorterController extends BaseController
         $url_id = $url->id;
 
         $short = ShortUrl::
-            where([
-                ["url_id", "=", $url_id], ["user_id", "=", $user->id]
-            ])
+        where([
+            ["url_id", "=", $url_id], ["user_id", "=", $user->id]
+        ])
             ->withCount("click")
             ->orderBy("click_count", "desc")
             ->get();
