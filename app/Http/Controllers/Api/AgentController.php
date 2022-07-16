@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
+use PHPUnit\TextUI\XmlConfiguration\PHPUnit;
 
-class AgentController extends Controller
+class AgentController extends BaseController
 {
+
 
     static public function getOs($user_agent)
     {
@@ -45,7 +48,7 @@ class AgentController extends Controller
             if (preg_match($regex, $user_agent))
                 $os_platform = $value;
 
-        return $os_platform;
+        return self::FindOrNewPlatform($os_platform);
     }
 
 
@@ -63,6 +66,7 @@ class AgentController extends Controller
             "opera"          => "Opera",
             "opr/"           => "Opera",
             "fxios"          => "Firefox",
+            "crios"          => "Chrome",
             "opios"          => "Opera",
             "nokiabrowser"   => "Nokia Browser",
             "chrome"         => "Chrome",
@@ -74,9 +78,10 @@ class AgentController extends Controller
 
         foreach ($browsers as $pattern => $value)
             if (strpos($t, $pattern))
-                return $value;
+                return self::FindOrNewBrowser($value);
 
-        return 'Unknown';
+        return self::FindOrNewBrowser("Unknown");
     }
+
 
 }

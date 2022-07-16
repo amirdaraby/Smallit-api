@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Browser;
+use App\Models\Platform;
 use App\Models\ShortUrl;
 use GuzzleHttp\Promise\Create;
+
 //use Hashids\Hashids;
 use App\Models\Url;
 use Illuminate\Http\Request;
@@ -43,6 +46,25 @@ class BaseController extends Controller
         } else return $LongUrl->id;
 
     }
+
+    public static function FindOrNewBrowser($browser): int
+    {
+
+        $browser = Browser::firstOrCreate([
+            "name" => $browser
+        ]);
+        return $browser->id;
+    }
+
+    public static function FindOrNewPlatform($platform): int
+    {
+        $platform = Platform::firstOrCreate([
+            "name" => $platform
+        ]);
+
+        return $platform->id;
+    }
+
 
     public function regexUrl($url): bool
     {

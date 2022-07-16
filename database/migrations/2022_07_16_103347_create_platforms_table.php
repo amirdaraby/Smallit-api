@@ -13,14 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('clicks', function (Blueprint $table) {
+        Schema::create('platforms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("short_id");
-            $table->foreign("short_id")->on("short_urls")
-                ->references("id")
-                ->onDelete("cascade");
-
-
+            $table->string("name")->nullable(false);
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clicks');
+        Schema::dropIfExists('platforms');
     }
 };

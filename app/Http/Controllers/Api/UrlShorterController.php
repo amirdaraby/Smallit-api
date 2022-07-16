@@ -6,6 +6,7 @@ use App\Http\Requests\FindRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 
+use App\Models\Browser;
 use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
@@ -36,18 +37,22 @@ class UrlShorterController extends BaseController
 
     public function test(Request $request)
     {
-        // TODO add fingerprint js
 
-        return $this->success([
-            "OS"        => AgentController::getOs($request->header("user-agent")),
-            "browser"   => AgentController::getBrowser($request->header("user-agent")),
-            "uid"       => $request->header("uid"),
-            "userAgent" => $request->header("user-agent")
-        ], "ok");
-//            return $this->get_browser_name($request->header("user-agent"));
-//        return $request->header("user-agent");
-//        return $this->success(get_browser($request->header("user-agent")),"ok",201);
-//        return $this->success($request->header("X-js"),"ok",201);
+//        dd($request->header("browser"));
+        $userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";
+        $uid       = "08d220a29df946983a74dc988e9577bd";
+
+        $click = Click::create([
+            "uid"         => $uid,
+            "browser_id"  => AgentController::getBrowser($userAgent),
+            "platform_id" => AgentController::getOs($userAgent),
+            "shorturl_id" => 1,
+            "useragent"  => $userAgent
+        ]);
+
+        return $click;
+        //        return AgentController::getBrowser("");
+
 
     }
 
@@ -116,12 +121,16 @@ class UrlShorterController extends BaseController
      * @param ShortUrl $url
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(ShortUrl $url): object
+    public function show(ShortUrl $url, Request $request): object
     {
-        Click::create(
+//        return $this->success( [ $request->header("user_agent") , $request->header("uid") ], "ok");
+
+        Click::updateOrCreate(
             [
-                "short_id" => $url->id,
-                "user_id"  => $url->user_id
+                "uid"         => $request->header("uid"),
+                "shorturl_id" => $url->id,
+                "browser_id"  => Browser::createOrFirst(),
+                "platform_id" => '',
             ]
         ); // TODO add this to basecontroller
         return $this->success($url->url->url, "ok", 201);
@@ -137,7 +146,7 @@ class UrlShorterController extends BaseController
         $url_id = $url->id;
 
         $short = ShortUrl::
-        where([ ["url_id", "=", $url_id], ["user_id", "=", $user->id] ])
+        where([["url_id", "=", $url_id], ["user_id", "=", $user->id]])
             ->withCount("click")
             ->orderBy("click_count", "desc")
             ->get();
