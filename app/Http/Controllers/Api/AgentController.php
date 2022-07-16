@@ -11,15 +11,15 @@ class AgentController extends Controller
     {
 
         $os_platform = "Unknown OS Platform";
-
-        $os_array = [
+        $user_agent  = strtolower($user_agent);
+        $os_array    = [
             '/windows nt 11/i'      => 'Windows',
             '/windows nt 10/i'      => 'Windows',
             '/windows nt 6.3/i'     => 'Windows',
             '/windows nt 6.2/i'     => 'Windows',
             '/windows nt 6.1/i'     => 'Windows',
             '/windows nt 6.0/i'     => 'Windows',
-            '/windows nt 5.2/i'     => 'Windows Server 2003/XP x64',
+            '/windows nt 5.2/i'     => 'Windows',
             '/windows nt 5.1/i'     => 'Windows',
             '/windows xp/i'         => 'Windows',
             '/windows nt 5.0/i'     => 'Windows',
@@ -27,16 +27,17 @@ class AgentController extends Controller
             '/win98/i'              => 'Windows',
             '/win95/i'              => 'Windows',
             '/win16/i'              => 'Windows',
-            '/windows phone/i'      => 'Windows Phone',
             '/macintosh|mac os x/i' => 'Mac OS',
             '/mac_powerpc/i'        => 'Mac OS',
             '/linux/i'              => 'Linux',
-            '/ubuntu/i'             => 'Ubuntu',
+//            '/ubuntu/i'             => 'Ubuntu',
             '/iphone/i'             => 'iPhone',
             '/ipod/i'               => 'iPod',
             '/ipad/i'               => 'iPad',
             '/android/i'            => 'Android',
             '/blackberry/i'         => 'BlackBerry',
+            '/playbook/i'           => 'BlackBerry',
+            '/windows phone/i'      => 'Windows Phone',
             '/webos/i'              => 'Mobile'
         ];
 
@@ -55,15 +56,26 @@ class AgentController extends Controller
         $t = " " . $t;
 
 //        dd(strpos($t,"safari"));
+        $browsers = [
+            "samsungbrowser" => "Samsung Browser",
+            "edge"           => "Edge",
+            "miuibrowser"    => "Miui Browser",
+            "opera"          => "Opera",
+            "opr/"           => "Opera",
+            "fxios"          => "Firefox",
+            "opios"          => "Opera",
+            "nokiabrowser"   => "Nokia Browser",
+            "chrome"         => "Chrome",
+            "safari"         => "Safari",
+            "firefox"        => "Firefox",
+            "msie"           => "Internet Explorer",
+            "trident/7"      => "Internet Explorer"
+        ];
 
-        if (strpos($t, 'chrome')) return 'Chrome';
-        elseif (strpos($t, 'edge')) return 'Edge';
-        elseif (strpos($t, 'opera') || strpos($t, 'opr/')) return 'Opera';
-        elseif (strpos($t, 'safari')) return 'Safari';
-        elseif (strpos($t, 'firefox')) return 'Firefox';
-//        elseif (strpos($t,''))
-//        elseif (strpos($t, 'tor')) return 'Tor';
-        elseif (strpos($t, 'msie') || strpos($t, 'trident/7')) return 'Internet Explorer';
+        foreach ($browsers as $pattern => $value)
+            if (strpos($t, $pattern))
+                return $value;
+
         return 'Unknown';
     }
 

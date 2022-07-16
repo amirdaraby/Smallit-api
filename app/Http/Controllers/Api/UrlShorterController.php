@@ -89,7 +89,7 @@ class UrlShorterController extends BaseController
 
         global $data;
         $short_url_id = $this->FindOrNewUrl($url);
-        $user_id = Auth::user()->id;
+        $user_id      = Auth::user()->id;
 
 
         for ($i = 0; $i < $request->count; $i++) {
@@ -130,14 +130,14 @@ class UrlShorterController extends BaseController
     public function find(FindRequest $request): object
     {
 
+
         $user = Auth::user();
-        $url = Url::select("id")->where("url", $request->find)->first();
+
+        $url    = Url::select("id")->where("url", $request->find)->first();
         $url_id = $url->id;
 
         $short = ShortUrl::
-        where([
-            ["url_id", "=", $url_id], ["user_id", "=", $user->id]
-        ])
+        where([ ["url_id", "=", $url_id], ["user_id", "=", $user->id] ])
             ->withCount("click")
             ->orderBy("click_count", "desc")
             ->get();
@@ -155,9 +155,9 @@ class UrlShorterController extends BaseController
     {
 
         $user_id = Auth::user()->id;
-        $url_id = Url::select("id")->where("url", "LIKE", "%$request->search%")->get();
+        $url_id  = Url::select("id")->where("url", "LIKE", "%$request->search%")->get();
 
-        $data = ShortUrl::with("url")->where("user_id", $user_id)->whereIn("url_id", $url_id)->orderBy("created_at", "desc")->get();
+        $data  = ShortUrl::with("url")->where("user_id", $user_id)->whereIn("url_id", $url_id)->orderBy("created_at", "desc")->get();
         $count = count($data);
 
         if (count($data) == 0)
