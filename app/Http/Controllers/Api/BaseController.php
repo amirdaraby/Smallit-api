@@ -66,7 +66,7 @@ class BaseController extends Controller
     }
 
 
-    public function regexUrl($url): bool
+    public static function regexUrl($url): bool
     {
 
         if (preg_match("/\/+$/m", $url))

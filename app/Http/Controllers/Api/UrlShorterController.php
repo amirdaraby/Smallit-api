@@ -11,6 +11,7 @@ use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\User;
+use Faker\Provider\Base;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -42,17 +43,14 @@ class UrlShorterController extends BaseController
         $userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";
         $uid       = "08d220a29df946983a74dc988e9577bd";
 
-        $click = Click::create([
+        $click = Click::updateOrCreate([
             "uid"         => $uid,
-            "browser_id"  => AgentController::getBrowser($userAgent),
-            "platform_id" => AgentController::getOs($userAgent),
-            "shorturl_id" => 1,
-            "useragent"  => $userAgent
+            "shorturl_id" => 2,
+            "platform_id" => AgentController::FindOrNewBrowser($userAgent),
+            "browser_id"  => AgentController::FindOrNewBrowser($userAgent),
+            "useragent"   => $userAgent
         ]);
-
         return $click;
-        //        return AgentController::getBrowser("");
-
 
     }
 

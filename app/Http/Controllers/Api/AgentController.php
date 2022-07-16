@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Platform;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 use PHPUnit\TextUI\XmlConfiguration\PHPUnit;
 
@@ -48,6 +49,7 @@ class AgentController extends BaseController
             if (preg_match($regex, $user_agent))
                 $os_platform = $value;
 
+
         return self::FindOrNewPlatform($os_platform);
     }
 
@@ -80,7 +82,7 @@ class AgentController extends BaseController
             if (strpos($t, $pattern))
                 return self::FindOrNewBrowser($value);
 
-        return self::FindOrNewBrowser("Unknown");
+        return self::FindOrNewBrowser($value);
     }
 
 
