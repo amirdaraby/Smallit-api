@@ -45,8 +45,8 @@ class UrlShorterController extends BaseController
 
         $click = Click::updateOrCreate([
             "uid"         => $uid,
-            "shorturl_id" => 2,
-            "platform_id" => AgentController::FindOrNewBrowser($userAgent),
+            "shorturl_id" => 3,
+            "platform_id" => AgentController::FindOrNewPlatform($userAgent),
             "browser_id"  => AgentController::FindOrNewBrowser($userAgent),
             "useragent"   => $userAgent
         ]);
@@ -121,32 +121,34 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url, Request $request): object
     {
-//        return $this->success( [ $request->header("user_agent") , $request->header("uid") ], "ok");
+
+
 
         Click::updateOrCreate(
             [
                 "uid"         => $request->header("uid"),
                 "shorturl_id" => $url->id,
-                "browser_id"  => Browser::createOrFirst(),
-                "platform_id" => '',
+                "browser_id"  => AgentController::getBrowser($request->header("user_agent")),
+                "platform_id" => AgentController::getOs($request->header("user_agent")),
+                "useragent" => $request->header("user_agent")
             ]
         ); // TODO add this to basecontroller
-        return $this->success($url->url->url, "ok", 201);
+        $url = $url->url->url;
+        return $this->success($url, "ok", 201);
     }
 
     public function find(FindRequest $request): object
     {
 
-
         $user = Auth::user();
 
         $url    = Url::select("id")->where("url", $request->find)->first();
         $url_id = $url->id;
-
+//        return $this->success($user->id,"ok");
         $short = ShortUrl::
         where([["url_id", "=", $url_id], ["user_id", "=", $user->id]])
             ->withCount("click")
-            ->orderBy("click_count", "desc")
+            ->orderBy("click_count","desc")
             ->get();
 
 

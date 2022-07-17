@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('clicks', function (Blueprint $table) {
             $table->id();
-            $table->string("uid")->nullable(false)->unique();
+            $table->string("uid")->nullable(false);
 
             $table->unsignedBigInteger("shorturl_id");
             $table->foreign("shorturl_id")->on("short_urls")
@@ -23,7 +23,7 @@ return new class extends Migration
                 ->onDelete("cascade");
 
             $table->unsignedBigInteger("browser_id");
-            $table->foreign("browser_id")->on("browsers")
+             $table->foreign("browser_id")->on("browsers")
                 ->references("id")
                 ->onDelete("cascade");
 
@@ -34,6 +34,8 @@ return new class extends Migration
 
             $table->string("useragent");
 
+
+            $table->unique(['uid','shorturl_id']);
 
             $table->timestamps();
         });
