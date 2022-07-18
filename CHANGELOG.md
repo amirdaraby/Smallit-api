@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 ## [Unrelased] 2022-07-dd
 - Add clicks information to dashboard
 
-## [Unrelased] 2022-07-dd
-- Fix Click count spam
+## [v1.1.1] 2022-07-17
+[v1.1.1]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.1
+- fake Click counting fixed
 
 
 ## [v1.1.0] 2022-07-14
