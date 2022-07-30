@@ -27,12 +27,14 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            "email"=> "required|string|email",
-            "password"=> "required"
+            "email"    => "required|string|email",
+            "password" => "required"
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException((BaseController::error($validator->errors(), 422)));
+        throw new HttpResponseException((BaseController::error($validator->errors(), 400)));
     }
+
 }

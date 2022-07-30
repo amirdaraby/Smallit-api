@@ -34,7 +34,7 @@ class RegisterRequest extends FormRequest
     }
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException((BaseController::error($validator->errors(), 422)));
+        throw new HttpResponseException((BaseController::error($validator->errors(), 400)));
     }
 
 }

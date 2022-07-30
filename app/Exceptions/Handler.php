@@ -57,6 +57,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof ModelNotFoundException) {
             return BaseController::error( "record not found" , 404);
         }
+
         if ($e instanceof AuthenticationException){
             return  BaseController::error("Unauthorized" , 401);
         }

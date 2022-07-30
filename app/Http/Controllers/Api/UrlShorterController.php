@@ -72,10 +72,9 @@ class UrlShorterController extends BaseController
             ->get();
 
 
-        if ($url)
-            return $this->success(["user" => $user, "url" => $url], "user's shorturl data");
-        else
-            return $this->success(["user" => $user], "this user has no short urls");
+
+            return $this->success(["user" => $user, "url" => $url], "user's shorturl data",201);
+
     }
 
 
@@ -134,7 +133,7 @@ class UrlShorterController extends BaseController
             ]
         ); // TODO add this to basecontroller
         $url = $url->url->url;
-        return $this->success($url, "ok", 201);
+        return $this->success($url, "ok");
     }
 
     public function find(FindRequest $request): object

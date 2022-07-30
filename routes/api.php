@@ -28,9 +28,9 @@ Route::group(["prefix" => "/v1"], function () {
     Route::group(["middleware" => "auth:sanctum"], function () {
         Route::get("/logout", [AuthController::class, "logout"])->name("api.logout");
         Route::resource("/url", UrlShorterController::class)->except(["show"]);
-        Route::post("/url/search", [UrlShorterController::class, "search"])->name("api.search");
+        Route::post("/url/search", [UrlShorterController::class, "search"])->name("api.search"); // todo change to get method
         Route::get("/url/header", [UrlShorterController::class, "header"])->name("api.header");
-        Route::post("/url/find/", [UrlShorterController::class, "find"])->name("api.find");
+        Route::post("/url/find/", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method
 
     });
 
