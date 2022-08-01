@@ -12,11 +12,6 @@ class Url extends Model
     protected $guarded = ["id"];
 
 
-    public function getRouteKeyName()
-    {
-        return "url";
-    }
-
 
     public function shorturl()
     {

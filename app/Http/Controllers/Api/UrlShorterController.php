@@ -12,6 +12,7 @@ use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\User;
 use Faker\Provider\Base;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,8 +73,7 @@ class UrlShorterController extends BaseController
             ->get();
 
 
-
-            return $this->success(["user" => $user, "url" => $url], "user's shorturl data",201);
+        return $this->success(["user" => $user, "url" => $url], "user's shorturl data", 201);
 
     }
 
@@ -122,18 +122,38 @@ class UrlShorterController extends BaseController
     {
 
 
-
         Click::updateOrCreate(
             [
                 "uid"         => $request->header("uid"),
                 "shorturl_id" => $url->id,
                 "browser_id"  => AgentController::getBrowser($request->header("user_agent")),
                 "platform_id" => AgentController::getOs($request->header("user_agent")),
-                "useragent" => $request->header("user_agent")
+                "useragent"   => $request->header("user_agent")
             ]
         ); // TODO add this to basecontroller
         $url = $url->url->url;
         return $this->success($url, "ok");
+    }
+
+    public function insights(ShortUrl $url)
+    {
+
+        return $url->load("click");
+    }
+
+
+    public function urlStats(Url $id): object
+    {
+        $shorturls = ShortUrl::where([["url_id", "=", $id->id], ["user_id", "=", Auth::id()]])
+            ->withCount("click")
+            ->orderBy("click_count", "desc")
+            ->get()
+            ->toArray();
+
+        return
+            empty($shorturls) ? $this->success(["url" => $id], "ok", 200)
+                : $this->success(["url" => $id, "shorturl" => $shorturls], "ok", 200);
+
     }
 
     public function find(FindRequest $request): object
@@ -147,8 +167,9 @@ class UrlShorterController extends BaseController
         $short = ShortUrl::
         where([["url_id", "=", $url_id], ["user_id", "=", $user->id]])
             ->withCount("click")
-            ->orderBy("click_count","desc")
-            ->get();
+            ->orderBy("click_count", "desc")
+            ->get()
+            ->toArray();
 
 
         if (!empty($short))
