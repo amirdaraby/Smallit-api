@@ -1,8 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unrelased] 2022-07-dd
+
+
+## [Unrelased] 2022-08-03 
 - Add clicks information to dashboard
+
+## [v1.1.2] 2022-08-01
+[v1.1.2]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.2
+
+- short urls dashboard bugs fixed
 
 ## [v1.1.1] 2022-07-17
 [v1.1.1]: https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.1
