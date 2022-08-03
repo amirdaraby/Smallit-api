@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+//    return \App\Models\ShortUrl::query()->findOrFail(27)->browsers;
     return view("welcome");
 });

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\FindRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
-
-use App\Models\Browser;
 use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
@@ -18,7 +16,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Api\AgentController;
-use function GuzzleHttp\Promise\all;
 use function PHPUnit\Framework\isEmpty;
 
 class UrlShorterController extends BaseController
@@ -28,33 +25,13 @@ class UrlShorterController extends BaseController
     {
 
         $short = User::with(["shorturl" => function ($q) {
-            $q->withCount("click");
+            $q->withCount("clicks");
         }])
             ->get();
 
 
         return $short;
     }
-
-
-    public function test(Request $request)
-    {
-
-//        dd($request->header("browser"));
-        $userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";
-        $uid       = "08d220a29df946983a74dc988e9577bd";
-
-        $click = Click::updateOrCreate([
-            "uid"         => $uid,
-            "shorturl_id" => 3,
-            "platform_id" => AgentController::FindOrNewPlatform($userAgent),
-            "browser_id"  => AgentController::FindOrNewBrowser($userAgent),
-            "useragent"   => $userAgent
-        ]);
-        return $click;
-
-    }
-
 
     public function index(): object
     {
@@ -122,12 +99,12 @@ class UrlShorterController extends BaseController
     {
 
 
-        Click::updateOrCreate(
+        Click::query()->updateOrCreate(
             [
                 "uid"         => $request->header("uid"),
                 "shorturl_id" => $url->id,
-                "browser_id"  => AgentController::getBrowser($request->header("user_agent")),
-                "platform_id" => AgentController::getOs($request->header("user_agent")),
+                "browser"  => AgentController::getBrowser($request->header("user_agent")),
+                "platform" => AgentController::getOs($request->header("user_agent")),
                 "useragent"   => $request->header("user_agent")
             ]
         ); // TODO add this to basecontroller
@@ -137,16 +114,16 @@ class UrlShorterController extends BaseController
 
     public function insights(ShortUrl $url)
     {
-
-        return $url->load("click");
+        $url = ShortUrl::with("clicks");
+        return $url;
     }
 
 
     public function urlStats(Url $id): object
     {
         $shorturls = ShortUrl::where([["url_id", "=", $id->id], ["user_id", "=", Auth::id()]])
-            ->withCount("click")
-            ->orderBy("click_count", "desc")
+            ->withCount("clicks")
+            ->orderBy("clicks_count", "desc")
             ->get()
             ->toArray();
 
@@ -155,30 +132,6 @@ class UrlShorterController extends BaseController
                 : $this->success(["url" => $id, "shorturl" => $shorturls], "ok", 200);
 
     }
-
-    public function find(FindRequest $request): object
-    {
-
-        $user = Auth::user();
-
-        $url    = Url::select("id")->where("url", $request->find)->first();
-        $url_id = $url->id;
-//        return $this->success($user->id,"ok");
-        $short = ShortUrl::
-        where([["url_id", "=", $url_id], ["user_id", "=", $user->id]])
-            ->withCount("click")
-            ->orderBy("click_count", "desc")
-            ->get()
-            ->toArray();
-
-
-        if (!empty($short))
-            return $this->success($short, "Url data", 201);
-
-        return $this->error("Not Found", 404);
-
-    }
-
 
     public function search(SearchRequest $request)
     {

@@ -14,7 +14,7 @@ class AgentController extends BaseController
     static public function getOs($user_agent)
     {
 
-        $os_platform = "Unknown OS Platform";
+        $os_platform = "Unknown";
         $user_agent  = strtolower($user_agent);
         $os_array    = [
             '/windows nt 11/i'      => 'Windows',
@@ -50,7 +50,7 @@ class AgentController extends BaseController
                 $os_platform = $value;
 
 
-        return self::FindOrNewPlatform($os_platform);
+        return $os_platform;
     }
 
 
@@ -80,9 +80,9 @@ class AgentController extends BaseController
 
         foreach ($browsers as $pattern => $value)
             if (strpos($t, $pattern))
-                return self::FindOrNewBrowser($value);
+                return $value;
 
-        return self::FindOrNewBrowser($value);
+        return "Unknown";
     }
 
 

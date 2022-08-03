@@ -18,14 +18,9 @@ class Url extends Model
         return $this->hasMany(ShortUrl::class, "url_id");
     }
 
-    public function click()
+    public function clicks()
     {
-
-        return $this->hasManyThrough(Click::class, ShortUrl::class,
-            'url_id',
-            'short_id',
-        );
-
+        return $this->hasManyThrough(Click::class, ShortUrl::class);
     }
 
 

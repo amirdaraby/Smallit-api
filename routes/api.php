@@ -34,6 +34,8 @@ Route::group(["prefix" => "/v1"], function () {
         Route::get("/url/header", [UrlShorterController::class, "header"])->name("api.header");
         Route::post("/url/find/", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method
 
+        Route::get("/clicks/{url}/browsers" , [\App\Http\Controllers\ClickController::class,"getBrowsers"])->name("api.clicks_browsers");
+        Route::get("/clicks/{url}/platforms/{?date}")
     });
 
 

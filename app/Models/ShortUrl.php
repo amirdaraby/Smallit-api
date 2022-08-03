@@ -9,10 +9,12 @@ use Illuminate\Support\Str;
 class ShortUrl extends Model
 {
     use HasFactory;
+
     protected $guarded = ["id"];
 
 
-    public function url(){
+    public function url()
+    {
 
         return $this->belongsTo(Url::class, "url_id");
     }
@@ -23,15 +25,16 @@ class ShortUrl extends Model
     }
 
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
 
-    public function click(){
-        return $this->hasMany(Click::class,"shorturl_id");
+    public function clicks()
+    {
+        return $this->hasMany(Click::class, "shorturl_id");
     }
-
 
 
 }

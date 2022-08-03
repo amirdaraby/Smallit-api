@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -22,20 +21,34 @@ return new class extends Migration
                 ->references("id")
                 ->onDelete("cascade");
 
-            $table->unsignedBigInteger("browser_id");
-             $table->foreign("browser_id")->on("browsers")
-                ->references("id")
-                ->onDelete("cascade");
 
-            $table->unsignedBigInteger("platform_id");
-            $table->foreign("platform_id")->on("platforms")
-                ->references("id")
-                ->onDelete("cascade");
+            $table->enum("platform", ["Windows",
+                "Android",
+                "Mac OS",
+                "Linux",
+                "iPhone",
+                "iPod",
+                "iPad",
+                "BlackBerry",
+                "Windows Phone",
+                "Mobile"])->nullable(false);
+
+            $table->enum("browser", ["Samsung Browser",
+                "Edge",
+                "Miui Browser",
+                "Firefox",
+                "Chrome",
+                "Opera",
+                "Nokia Browser",
+                "Safari",
+                "Internet Explorer",
+                "Unknown"]);
+
 
             $table->string("useragent");
 
 
-            $table->unique(['uid','shorturl_id']);
+            $table->unique(['uid', 'shorturl_id']);
 
             $table->timestamps();
         });
