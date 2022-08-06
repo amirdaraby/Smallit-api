@@ -99,25 +99,18 @@ class UrlShorterController extends BaseController
     {
 
 
-        Click::query()->updateOrCreate(
+        Click::updateOrCreate(
             [
                 "uid"         => $request->header("uid"),
                 "shorturl_id" => $url->id,
-                "browser"  => AgentController::getBrowser($request->header("user_agent")),
-                "platform" => AgentController::getOs($request->header("user_agent")),
+                "browser"     => AgentController::getBrowser($request->header("user_agent")),
+                "platform"    => AgentController::getOs($request->header("user_agent")),
                 "useragent"   => $request->header("user_agent")
             ]
         ); // TODO add this to basecontroller
         $url = $url->url->url;
         return $this->success($url, "ok");
     }
-
-    public function insights(ShortUrl $url)
-    {
-        $url = ShortUrl::with("clicks");
-        return $url;
-    }
-
 
     public function urlStats(Url $id): object
     {
@@ -128,7 +121,8 @@ class UrlShorterController extends BaseController
             ->toArray();
 
         return
-            empty($shorturls) ? $this->success(["url" => $id], "ok", 200)
+            empty($shorturls)
+                ? $this->success(["url" => $id], "ok", 200)
                 : $this->success(["url" => $id, "shorturl" => $shorturls], "ok", 200);
 
     }

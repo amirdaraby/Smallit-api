@@ -22,20 +22,29 @@ Route::group(["prefix" => "/v1"], function () {
     Route::post("/register", [AuthController::class, "register"])->name("api.register");
     Route::get("/show/{url}", [UrlShorterController::class, "show"])->name("api.show");
     Route::get("/test", [UrlShorterController::class, "test"])->name("api.test");
-    Route::get("/click", [UrlShorterController::class,"clickTest"])->name("api.click");
+    Route::get("/click", [UrlShorterController::class, "clickTest"])->name("api.click");
 
 
     Route::group(["middleware" => "auth:sanctum"], function () {
         Route::get("/logout", [AuthController::class, "logout"])->name("api.logout");
         Route::resource("/url", UrlShorterController::class)->except(["show"]);
-        Route::get("/url/{id}/stats", [UrlShorterController::class,"urlStats"])->name("api.url_stats");
-        Route::get("/url/{url}/insights", [UrlShorterController::class,"insights"])->name("api.shorturl_insights");
-        Route::post("/url/search", [UrlShorterController::class, "search"])->name("api.search"); // todo change to get method
+        Route::get("/url/{id}/stats", [UrlShorterController::class, "urlStats"])->name("api.url_stats");
+        Route::post("/url/search", [UrlShorterController::class, "search"])->name("api.search"); // todo change to get method - done
         Route::get("/url/header", [UrlShorterController::class, "header"])->name("api.header");
-        Route::post("/url/find/", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method
+        Route::post("/url/find/", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method - done
 
-        Route::get("/clicks/{url}/browsers" , [\App\Http\Controllers\ClickController::class,"getBrowsers"])->name("api.clicks_browsers");
-        Route::get("/clicks/{url}/platforms/{?date}")
+//        Route::get("/url/{url}/insights", [UrlShorterController::class,"insights"])->name("api.shorturl_insights");
+
+        /*
+         *   Clicks
+         */
+        Route::group(["prefix" => "/reach"], function () {
+            Route::get("/{url}",[\App\Http\Controllers\Api\ClickController::class,"index"])->name("api.reach");
+            Route::get("/{url}/browsers/", [\App\Http\Controllers\Api\ClickController::class, "getBrowsers"])->name("api.reach_browsers");
+            Route::get("/{url}/platforms/", [\App\Http\Controllers\Api\ClickController::class, "getPlatforms"])->name("api.reach_platforms");
+
+        });
+        //        Route::get("/clicks/{url}/platforms/{?date}")
     });
 
 

@@ -16,5 +16,8 @@ class Click extends Model
         return $this->belongsTo(ShortUrl::class, "short_id");
     }
 
+    public function user(){
+        return $this->belongsTo(User::class,"user_id");
+    }
 
 }
