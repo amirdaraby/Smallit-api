@@ -3,9 +3,12 @@
 namespace App\Exceptions;
 
 use Faker\Provider\Base;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 use App\Http\Controllers\Api\BaseController;
@@ -62,5 +65,8 @@ class Handler extends ExceptionHandler
             return  BaseController::error("Unauthorized" , 401);
         }
 
+        if ($e instanceof AuthorizationException){
+            return BaseController::error("Forbidden", 403);
+        }
     }
 }

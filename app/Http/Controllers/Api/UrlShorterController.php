@@ -75,17 +75,19 @@ class UrlShorterController extends BaseController
             $data [$i] = [
                 "short_url" => Str::random(5),
                 "url_id"    => $short_url_id,
-                "user_id"   => $user_id
+                "user_id"   => $user_id,
+                "created_at" => now()->format("Y/m/d H:i:s"),
+                "updated_at" => now()->format("Y/m/d H:i:s")
             ];
         }
-//        dd($data);
+
 
         $data = ShortUrl::insert($data);
 
         if ($data)
-            return $this->success($data, "ok", 200);
+            return $this->success($data, "$request->count short urls created for $request->url", 201);
         else
-            return $this->error($data, 500);
+            return $this->error("no", 500);
 //            return $this->error("create failed", 500);
 
 

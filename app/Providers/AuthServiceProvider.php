@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -27,8 +28,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define("url-stats" , function (User $user , Url $url){
-
+        Gate::define("reach" , function (User $user  , ShortUrl $shortUrl ){
+            return $shortUrl->user_id === $user->id;
         });
     }
 }

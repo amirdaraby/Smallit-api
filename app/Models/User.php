@@ -49,8 +49,9 @@ class User extends Authenticatable
 
     public function clicks()
     {
-        return $this->hasMany(Click::class,"user_id");
+        return $this->hasManyThrough(Click::class, ShortUrl::class,
+            "user_id", "shorturl_id",
+            "id", "id");
     }
-
 
 }

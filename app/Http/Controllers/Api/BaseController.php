@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+
 //use Hashids\Hashids;
 use App\Models\Url;
 
@@ -14,9 +15,9 @@ class BaseController extends Controller
     }
 
 
-    public static function error($message, $code = 422): object
+    public static function error($message, $code = 422, $data = null): object
     {
-        return response()->json(["status" => "error", "message" => $message], $code);
+        return response()->json(["status" => "error", "message" => $message, "data" => $data], $code);
     }
 
     /*

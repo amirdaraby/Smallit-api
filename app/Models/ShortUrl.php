@@ -11,7 +11,7 @@ class ShortUrl extends Model
     use HasFactory;
 
     protected $guarded = ["id"];
-
+    public $timestamps = true;
 
     public function url()
     {
