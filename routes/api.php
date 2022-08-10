@@ -33,25 +33,26 @@ Route::group(["prefix" => "/v1"], function () {
         Route::get("/url/header", [UrlShorterController::class, "header"])->name("api.header");
         Route::post("/url/find/", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method - done
 
-//        Route::get("/url/{url}/insights", [UrlShorterController::class,"insights"])->name("api.shorturl_insights");
+
+
 
         /*
-         *   Clicks
+         * # Clicks
          */
         Route::group(["prefix" => "/reach"], function () {
+
             Route::get("/{url}",[\App\Http\Controllers\Api\ClickController::class,"index"])->name("api.reach");
             Route::get("/{url}/browsers/", [\App\Http\Controllers\Api\ClickController::class, "getBrowsers"])->name("api.reach_browsers");
             Route::get("/{url}/platforms/", [\App\Http\Controllers\Api\ClickController::class, "getPlatforms"])->name("api.reach_platforms");
+            Route::get("/{url}/count",[\App\Http\Controllers\Api\ClickController::class,"getCount"])->name("api.reach_count");
+            Route::get("/{url}/all", [\App\Http\Controllers\Api\ClickController::class,"getAll"])->name("api.reach_all");
 
+            //            Route::get("/{url}/platforms/{}");
         });
-        //        Route::get("/clicks/{url}/platforms/{?date}")
+
     });
 
 
-//    Route::post('/register',[\App\Http\Controllers\AuthController::class,"register"])->name("api.register");
-//    Route::get("/index",[\App\Http\Controllers\UrlShorterController::class,"index"])->name("api.index");
-//    Route::post("/store",[\App\Http\Controllers\UrlShorterController::class,"store"])->name("api.store");
-//    Route::get("/show/{url?}",[\App\Http\Controllers\UrlShorterController::class,"show"])->name("api.show");
 });
 
 

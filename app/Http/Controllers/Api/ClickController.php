@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ClickResource;
 use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\User;
@@ -19,11 +20,12 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class ClickController extends BaseController
 {
 
-    public function index(ShortUrl $url)
+    public function getAll(ShortUrl $url)
     {
-        return $url;
+        $reach = Click::all();
+        // todo resource
+        return $reach->load("shorturl");
     }
-
 
     /**
      * @throws AuthenticationException
@@ -41,7 +43,7 @@ class ClickController extends BaseController
             ->get()
             ->toArray();
 
-        return !empty($data) ? $this->success(["shorturl" => $url->loadCount("clicks"), "clicks" => $data], "clicks grouped by browser for this shorturl")
+        return !empty($data) ? $this->success(["shorturl" => $url, "clicks" => $data], "clicks grouped by browser for this shorturl")
             : $this->error("there is no reaches sorted by browser", 404);
     }
 
@@ -58,8 +60,13 @@ class ClickController extends BaseController
             ->get()
             ->toArray();
 
-        return !empty($data) ? $this->success(["shorturl" => $url->loadCount("clicks"), "clicks" => $data], "clicks grouped by platform for this shorturl")
+        return !empty($data) ? $this->success(["shorturl" => $url, "clicks" => $data], "clicks grouped by platform for this shorturl")
             : $this->error("there is no reaches sorted by platform", 404);
+    }
+
+
+    public function getCount(ShortUrl $url){
+        return $url->loadCount("clicks");
     }
 
 
