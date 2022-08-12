@@ -22,9 +22,14 @@ class ClickController extends BaseController
 
     public function getAll(ShortUrl $url)
     {
-        $reach = Click::all();
-        // todo resource
-        return $reach->load("shorturl");
+
+        if (!Gate::allows("reach", $url))
+            throw new AuthorizationException();
+
+        $reach = Click::query()->select("platform", "browser", "created_at")->orderBy("created_at", "desc")->where("shorturl_id", $url->id)
+            ->paginate(10);
+
+        return $this->success(["shorturl" => $url->loadCount("clicks"), "clicks" => $reach], "all clicks of shorturl : $url->short_url");
     }
 
     /**
@@ -64,11 +69,14 @@ class ClickController extends BaseController
             : $this->error("there is no reaches sorted by platform", 404);
     }
 
-
-    public function getCount(ShortUrl $url){
-        return $url->loadCount("clicks");
+    public function getByTime(ShortUrl $url , $from , $to){
+        dd($url,$from,$to);
     }
 
+    public function getShortUrlWithCount(ShortUrl $url)
+    {
+        return $url->loadCount("clicks");
+    }
 
     public function getBrowsersByDate(ShortUrl $url)
     {

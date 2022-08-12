@@ -116,6 +116,7 @@ class UrlShorterController extends BaseController
 
     public function urlStats(Url $id): object
     {
+
         $shorturls = ShortUrl::where([["url_id", "=", $id->id], ["user_id", "=", Auth::id()]])
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
