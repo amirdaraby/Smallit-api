@@ -49,7 +49,6 @@ class UrlShorterController extends BaseController
             ->where("user_id", $user->id)->groupBy('url_id')
             ->get();
 
-
         return $this->success(["user" => $user, "url" => $url], "user's shorturl data", 201);
 
     }
@@ -114,14 +113,14 @@ class UrlShorterController extends BaseController
         return $this->success($url, "ok");
     }
 
-    public function urlStats(Url $id): object
+    public function urlStats(Url $id)
     {
+
 
         $shorturls = ShortUrl::where([["url_id", "=", $id->id], ["user_id", "=", Auth::id()]])
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
-            ->get()
-            ->toArray();
+            ->paginate(10);
 
         return
             empty($shorturls)

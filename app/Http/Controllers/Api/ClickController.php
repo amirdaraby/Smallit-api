@@ -75,7 +75,7 @@ class ClickController extends BaseController
 
     public function getShortUrlWithCount(ShortUrl $url)
     {
-        return $url->loadCount("clicks");
+        return $this->success($url->loadCount("clicks"),"short urls with count of clicks");
     }
 
     public function getBrowsersByDate(ShortUrl $url)

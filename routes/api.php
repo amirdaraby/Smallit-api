@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\UrlShorterController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\UrlShorterController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +22,12 @@ Route::group(["prefix" => "/v1"], function () {
     Route::get("/show/{url}", [UrlShorterController::class, "show"])->name("api.show");
 
 
+    /*
+     *
+     * # Url and Short url
+     *
+     * */
+
     Route::group(["middleware" => "auth:sanctum"], function () {
         Route::get("/logout", [AuthController::class, "logout"])->name("api.logout");
 
@@ -32,8 +37,9 @@ Route::group(["prefix" => "/v1"], function () {
             Route::post("/search", [UrlShorterController::class, "search"])->name("api.search"); // todo change to get method - done
             Route::get("/header", [UrlShorterController::class, "header"])->name("api.header");
             Route::post("/find", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method - done
-        });
 
+
+        });
 
         /*
          * # Clicks
@@ -49,6 +55,16 @@ Route::group(["prefix" => "/v1"], function () {
 
 
             //            Route::get("/{url}/platforms/{}");
+        });
+
+        /*
+         * # User
+         *
+         * */
+
+        Route::group(["prefix" => "/user"], function (){
+            Route::get("/clicks/count",[\App\Http\Controllers\Api\UserController::class,"userClicks"])->name("api.user_clicks");
+            Route::get("/url/all",[\App\Http\Controllers\Api\UserController::class,"userShortUrls"])->name("api.user_shorturls");
         });
 
     });
