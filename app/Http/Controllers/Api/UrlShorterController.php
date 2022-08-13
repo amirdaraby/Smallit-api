@@ -10,6 +10,7 @@ use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\User;
 use Faker\Provider\Base;
+use http\Header;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,17 +22,6 @@ use function PHPUnit\Framework\isEmpty;
 class UrlShorterController extends BaseController
 {
 
-    public function clickTest()
-    {
-
-        $short = User::with(["shorturl" => function ($q) {
-            $q->withCount("clicks");
-        }])
-            ->get();
-
-
-        return $short;
-    }
 
     public function index(): object
     {
@@ -73,9 +63,9 @@ class UrlShorterController extends BaseController
 
         for ($i = 0; $i < $request->count; $i++) {
             $data [$i] = [
-                "short_url" => Str::random(5),
-                "url_id"    => $short_url_id,
-                "user_id"   => $user_id,
+                "short_url"  => Str::random(5),
+                "url_id"     => $short_url_id,
+                "user_id"    => $user_id,
                 "created_at" => now()->format("Y/m/d H:i:s"),
                 "updated_at" => now()->format("Y/m/d H:i:s")
             ];
@@ -99,7 +89,8 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url, Request $request): object
     {
-
+//        header("Access-Control-Allow-Origin: *");
+//        header("Access-Control-Allow-Headers: *");
 
         Click::updateOrCreate(
             [
@@ -111,17 +102,18 @@ class UrlShorterController extends BaseController
             ]
         ); // TODO add this to basecontroller
         $url = $url->url->url;
-        return $this->success($url, "ok");
+        return $this->success($url,"ok");
+
     }
 
-    public function urlStats(Url $id): object
+    public function urlStats(Url $id)
     {
+
 
         $shorturls = ShortUrl::where([["url_id", "=", $id->id], ["user_id", "=", Auth::id()]])
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
-            ->get()
-            ->toArray();
+            ->paginate(10);
 
         return
             empty($shorturls)
