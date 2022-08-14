@@ -47,10 +47,7 @@ return new class extends Migration {
 
             $table->string("useragent");
 
-
-            $table->unique(['uid', 'shorturl_id']);
-
-            $table->timestamps();
+            $table->timestamp("created_at");
         });
     }
 

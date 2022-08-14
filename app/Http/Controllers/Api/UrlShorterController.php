@@ -58,25 +58,25 @@ class UrlShorterController extends BaseController
      * @param UrlRequest $request
      * @return string
      */
-    public function store(UrlRequest $request): object
+    public function store(UrlRequest $request)
     {
-        $url = $request->url;
 
+        $url = $request->url;
+//        return $this->FindOrNewUrl($url);
         if ($this->regexUrl($url))
             $url = $url . "/";
 
         global $data;
-        $short_url_id = $this->FindOrNewUrl($url);
-        $user_id      = Auth::user()->id;
 
+        $url_id  = $this->FindOrNewUrl($url);
+
+        $user_id = Auth::user()->id;
 
         for ($i = 0; $i < $request->count; $i++) {
             $data [$i] = [
-                "short_url" => Str::random(5),
-                "url_id"    => $short_url_id,
-                "user_id"   => $user_id,
-                "created_at" => now()->format("Y/m/d H:i:s"),
-                "updated_at" => now()->format("Y/m/d H:i:s")
+                "short_url"  => Str::random(5),
+                "url_id"     => $url_id,
+                "user_id"    => $user_id,
             ];
         }
 
@@ -99,8 +99,7 @@ class UrlShorterController extends BaseController
     public function show(ShortUrl $url, Request $request): object
     {
 
-
-        Click::updateOrCreate(
+        Click::create(
             [
                 "uid"         => $request->header("uid"),
                 "shorturl_id" => $url->id,

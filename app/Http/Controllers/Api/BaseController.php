@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 
 //use Hashids\Hashids;
 use App\Models\Url;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class BaseController extends Controller
 {
@@ -27,14 +29,18 @@ class BaseController extends Controller
      *
      */
 
-    public function FindOrNewUrl($url): string
+    public function FindOrNewUrl($url)
     {
-        $LongUrl = Url::where("url", $url)->first();
+        $LongUrl = Url::where([["url", "=", $url], ["user_id", "=", Auth::id()]])->first();
+
 
         if (!isset($LongUrl)) {
             $LongUrl = Url::create([
-                "url" => $url
+                "url"     => $url,
+                "user_id" => Auth::id(),
+//                "created_at" => now()
             ]);
+
             return $LongUrl->id;
         } else return $LongUrl->id;
 

@@ -29,7 +29,7 @@ class ClickController extends BaseController
         $reach = Click::query()->select("platform", "browser", "created_at")->orderBy("created_at", "desc")->where("shorturl_id", $url->id)
             ->paginate(10);
 
-        return $this->success(["shorturl" => $url->loadCount("clicks"), "clicks" => $reach], "all clicks of shorturl : $url->short_url");
+        return $this->success(["shorturl" => $url->loadCount("clicks")->load(["url" => function($q){$q->select('id','url');}]), "clicks" => $reach], "all clicks of shorturl : $url->short_url");
     }
 
     /**
@@ -75,7 +75,7 @@ class ClickController extends BaseController
 
     public function getShortUrlWithCount(ShortUrl $url)
     {
-        return $this->success($url->loadCount("clicks"),"short urls with count of clicks");
+        return $this->success($url->loadCount("clicks")->load("url"),"short urls with count of clicks");
     }
 
     public function getBrowsersByDate(ShortUrl $url)

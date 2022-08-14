@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Click extends Model
 {
+
     use HasFactory;
+
+    public $timestamps = false;
 
     protected $guarded = ['id'];
 
@@ -17,11 +20,14 @@ class Click extends Model
         return $this->belongsTo(ShortUrl::class, "shorturl_id");
     }
 
-    public function user(){
-        return $this->belongsTo(User::class,"user_id");
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id");
     }
 
-
-
+    public function setCreatedAtAttribute()
+    {
+        $this->attributes['created_at'] = now()->timestamp;
+    }
 
 }
