@@ -17,13 +17,13 @@ use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 
-class ClickController extends BaseController
+class ViewController extends BaseController
 {
 
     public function getAll(ShortUrl $url)
     {
 
-        if (!Gate::allows("reach", $url))
+        if (!Gate::allows("reach", $url)) // todo change this
             throw new AuthorizationException();
 
         $reach = Click::query()->select("platform", "browser", "created_at")->orderBy("created_at", "desc")->where("shorturl_id", $url->id)

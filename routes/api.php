@@ -44,14 +44,14 @@ Route::group(["prefix" => "/v1"], function () {
         /*
          * # Clicks
          */
-        Route::group(["prefix" => "/reach"], function () {
+        Route::group(["prefix" => "/views"], function () {
 
-            Route::get("/{url}", [\App\Http\Controllers\Api\ClickController::class, "index"])->name("api.reach");
-            Route::get("/{url}/browsers/", [\App\Http\Controllers\Api\ClickController::class, "getBrowsers"])->name("api.reach_browsers");
-            Route::get("/{url}/platforms/", [\App\Http\Controllers\Api\ClickController::class, "getPlatforms"])->name("api.reach_platforms");
-            Route::get("/{url}/count", [\App\Http\Controllers\Api\ClickController::class, "getShorturlWithCount"])->name("api.reach_count");
-            Route::get("/{url}/all", [\App\Http\Controllers\Api\ClickController::class, "getAll"])->name("api.reach_all");
-            Route::get("/{url}/all/{from}/{to}", [\App\Http\Controllers\Api\ClickController::class, "getByTime"]);
+            Route::get("/{url}", [\App\Http\Controllers\Api\ViewController::class, "index"])->name("api.view");
+            Route::get("/{url}/browsers/", [\App\Http\Controllers\Api\ViewController::class, "getBrowsers"])->name("api.view_browsers");
+            Route::get("/{url}/platforms/", [\App\Http\Controllers\Api\ViewController::class, "getPlatforms"])->name("api.view_platforms");
+            Route::get("/{url}/count", [\App\Http\Controllers\Api\ViewController::class, "getShorturlWithCount"])->name("api.view_count");
+            Route::get("/{url}/all", [\App\Http\Controllers\Api\ViewController::class, "getAll"])->name("api.view_all");
+            Route::get("/{url}/all/{from}/{to}", [\App\Http\Controllers\Api\ViewController::class, "getByTime"]);
 
 
             //            Route::get("/{url}/platforms/{}");
@@ -62,9 +62,9 @@ Route::group(["prefix" => "/v1"], function () {
          *
          * */
 
-        Route::group(["prefix" => "/user"], function (){
-            Route::get("/clicks/count",[\App\Http\Controllers\Api\UserController::class,"userClicks"])->name("api.user_clicks");
-            Route::get("/url/all",[\App\Http\Controllers\Api\UserController::class,"userShortUrls"])->name("api.user_shorturls");
+        Route::group(["prefix" => "/user"], function () {
+            Route::get("/clicks/count", [\App\Http\Controllers\Api\UserController::class, "userClicks"])->name("api.user_clicks");
+            Route::get("/url/all", [\App\Http\Controllers\Api\UserController::class, "userShortUrls"])->name("api.user_shorturls");
         });
 
     });
