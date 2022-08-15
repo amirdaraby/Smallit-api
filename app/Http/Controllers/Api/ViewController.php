@@ -48,7 +48,7 @@ class ViewController extends BaseController
             ->get()
             ->toArray();
 
-        return !empty($data) ? $this->success(["shorturl" => $url, "clicks" => $data], "clicks grouped by browser for this shorturl")
+        return !empty($data) ? $this->success(["shorturl" => $url, "views" => $data], "clicks grouped by browser for this shorturl")
             : $this->error("there is no reaches sorted by browser", 404);
     }
 
@@ -65,7 +65,7 @@ class ViewController extends BaseController
             ->get()
             ->toArray();
 
-        return !empty($data) ? $this->success(["shorturl" => $url, "clicks" => $data], "clicks grouped by platform for this shorturl")
+        return !empty($data) ? $this->success(["shorturl" => $url, "views" => $data], "clicks grouped by platform for this shorturl")
             : $this->error("there is no reaches sorted by platform", 404);
     }
 
