@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\FindRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
+use App\Jobs\ShortUrlJob;
 use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
@@ -61,6 +62,7 @@ class UrlShorterController extends BaseController
     public function store(UrlRequest $request)
     {
 
+
         $url = $request->url;
 //        return $this->FindOrNewUrl($url);
         if ($this->regexUrl($url))
@@ -68,10 +70,16 @@ class UrlShorterController extends BaseController
 
         global $data;
 
+
         $url_id  = $this->FindOrNewUrl($url);
 
         $user_id = Auth::user()->id;
 
+        $count = $request->count;
+
+        ShortUrlJob::dispatch($url_id,$count,$user_id);
+
+        die;
         for ($i = 0; $i < $request->count; $i++) {
             $data [$i] = [
                 "short_url"  => Str::random(5),

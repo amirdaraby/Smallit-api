@@ -15,6 +15,10 @@ return new class extends Migration {
         Schema::create('urls', function (Blueprint $table) {
             $table->id();
             $table->string("url");
+            $table->unsignedBigInteger("user_id");
+            $table->foreign("user_id")->on("users")->references("id")
+                ->onDelete("cascade");
+
             $table->timestamp("created_at")->autoIncrement();
         });
     }

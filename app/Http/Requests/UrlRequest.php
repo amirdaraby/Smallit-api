@@ -28,7 +28,7 @@ class UrlRequest extends FormRequest
     {
         return [
             "url" => ["required","url","regex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/"],
-            "count" => ["required","between:1,20000","int","integer"]
+            "count" => ["required","int","integer"]
         ];
     }
 
