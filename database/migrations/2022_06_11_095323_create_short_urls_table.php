@@ -16,12 +16,15 @@ return new class extends Migration {
 
             $table->id();
             $table->string("short_url");
+
             $table->unsignedBigInteger("user_id");
             $table->foreign("user_id")->on("users")->references("id")
                 ->onDelete("cascade");
             $table->unsignedBigInteger("url_id");
             $table->foreign("url_id")->on("urls")->references("id")
                 ->onDelete("cascade");
+
+            $table->unique("short_url");
 
         });
     }

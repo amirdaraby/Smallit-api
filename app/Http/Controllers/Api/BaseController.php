@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Url;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class BaseController extends Controller
 {
@@ -54,6 +55,17 @@ class BaseController extends Controller
             return 0;
         return 1;
 
+    }
+
+    public static function generateUrl(int $length = 6){
+
+        $randStr = uniqid();
+//        $randStr = md5($randStr);
+        $randStr = Str::reverse($randStr);
+        $randStr = Str::substr($randStr, 0, 6);
+
+
+        return $randStr;
     }
 
 

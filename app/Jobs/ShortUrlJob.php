@@ -17,9 +17,11 @@ class ShortUrlJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+
     public $url; // ** url ID **
     public $count;
     public $user; // ** user ID **
+    public $tries = 5;
 
     /**
      * Create a new job instance.
@@ -28,9 +30,9 @@ class ShortUrlJob implements ShouldQueue
      */
     public function __construct($url, $count, $user)
     {
-        $this->url   = (int)$url;
+        $this->url = (int)$url;
         $this->count = (int)$count;
-        $this->user  = (int)$user;
+        $this->user = (int)$user;
     }
 
     /**
@@ -40,24 +42,27 @@ class ShortUrlJob implements ShouldQueue
      */
     public function handle()
     {
-
+        sleep(3);
+// todo fix
         $insertData = [];
         for ($i = 0; $i < $this->count; $i++) {
             $insertData [$i] = [
-                "short_url" => Str::random(5),
+                "short_url" => BaseController::generateUrl(),
                 "url_id" => $this->url,
                 "user_id" => $this->user
             ];
         }
 
+
         $insertData = collect($insertData);
+
 
         $chunks = $insertData->chunk(10000);
 
         foreach ($chunks->toArray() as $chunk) {
+//            print "doing";
             ShortUrl::insert($chunk); // todo only this remaining.
-//            sleep(4);
+            sleep(1);
         }
-
     }
 }

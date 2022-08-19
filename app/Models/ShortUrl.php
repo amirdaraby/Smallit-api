@@ -11,6 +11,7 @@ class ShortUrl extends Model
     use HasFactory;
 
     protected $guarded = ["id"];
+    protected $fillable = ["short_url" , "url_id" ,"user_id"];
     public $timestamps = true;
 
     public function url()
