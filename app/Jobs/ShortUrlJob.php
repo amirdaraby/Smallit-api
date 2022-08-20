@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Models\ShortUrl;
+use App\Models\ShortUrlMaxId;
+use Faker\Provider\Base;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use function Symfony\Component\Translation\t;
 
 class ShortUrlJob implements ShouldQueue
 {
@@ -21,7 +24,7 @@ class ShortUrlJob implements ShouldQueue
     public $url; // ** url ID **
     public $count;
     public $user; // ** user ID **
-    public $tries = 5;
+
 
     /**
      * Create a new job instance.
@@ -30,9 +33,9 @@ class ShortUrlJob implements ShouldQueue
      */
     public function __construct($url, $count, $user)
     {
-        $this->url = (int)$url;
+        $this->url   = (int)$url;
         $this->count = (int)$count;
-        $this->user = (int)$user;
+        $this->user  = (int)$user;
     }
 
     /**
@@ -42,27 +45,39 @@ class ShortUrlJob implements ShouldQueue
      */
     public function handle()
     {
-        sleep(3);
-// todo fix
-        $insertData = [];
-        for ($i = 0; $i < $this->count; $i++) {
-            $insertData [$i] = [
-                "short_url" => BaseController::generateUrl(),
-                "url_id" => $this->url,
-                "user_id" => $this->user
-            ];
-        }
+//        sleep(5);
 
+        $shortUrlView = ShortUrlMaxId::query()->first();
+
+        if ($shortUrlView->max_id == null)
+            $shortUrlView->max_id = 0;
+
+
+        for ($i = 0; $i < $this->count; $i++) {
+//            dump($i);
+            $insertData [$i] = [
+                'user_id'   => $this->user,
+                'url_id'    => $this->url,
+                'short_url' => BaseController::generateUrl(++$shortUrlView->max_id)
+            ];
+            dump($shortUrlView->max_id);
+            sleep(0.3);
+        }
+        dump("created 2d array");
 
         $insertData = collect($insertData);
 
-
+//        dump($insertData);
         $chunks = $insertData->chunk(10000);
+        dump("data chunked");
 
+        dump($chunks->toArray());
         foreach ($chunks->toArray() as $chunk) {
-//            print "doing";
-            ShortUrl::insert($chunk); // todo only this remaining.
-            sleep(1);
+            sleep(2);
+            ShortUrl::insert($chunk);
+            dump("inserting");
         }
+        dump("mission completed !");
+
     }
 }

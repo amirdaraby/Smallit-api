@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Url;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class BaseController extends Controller
@@ -57,15 +58,14 @@ class BaseController extends Controller
 
     }
 
-    public static function generateUrl(int $length = 6){
+    public static function generateUrl(int $id,int $length = 6)
+    {
 
-        $randStr = uniqid();
-//        $randStr = md5($randStr);
-        $randStr = Str::reverse($randStr);
-        $randStr = Str::substr($randStr, 0, 6);
+        $shortUrl = base_convert($id , 10, 36);
+        $time = Str::reverse(md5(microtime(true)));
+        $shortUrl = $shortUrl.$time;
 
-
-        return $randStr;
+        return Str::substr($shortUrl,0,$length);
     }
 
 
