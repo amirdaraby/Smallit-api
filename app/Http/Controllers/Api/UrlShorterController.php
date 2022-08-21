@@ -53,7 +53,8 @@ class UrlShorterController extends BaseController
         }])->select("url_id")
             ->where("user_id", $user->id)->groupBy('url_id')
             ->get();
-
+        if ($url->isEmpty())
+            return $this->error("this user does not have short urls", 404, null);
         return $this->success(["user" => $user, "url" => $url], "user's shorturl data");
 
     }
@@ -63,7 +64,7 @@ class UrlShorterController extends BaseController
      * @param UrlRequest $request
      * @return string
      */
-    public function store(UrlRequest $request)
+    public function store(Request $request)
     {
 
         $url = $request->url;
@@ -79,9 +80,9 @@ class UrlShorterController extends BaseController
 
         $job = UserJobs::create([
             'user_id' => $user_id,
-            'url_id'  => $url_id,
-            'count'   => $count,
-            'status'  => 'queue'
+            'url_id' => $url_id,
+            'count' => $count,
+            'status' => 'queue'
         ]);
 
         ShortUrlJob::dispatch($url_id, $count, $user_id, $job);
@@ -104,11 +105,11 @@ class UrlShorterController extends BaseController
 
         Click::create(
             [
-                "uid"         => $request->header("uid"),
+                "uid" => $request->header("uid"),
                 "shorturl_id" => $url->id,
-                "browser"     => AgentController::getBrowser($request->header("user_agent")),
-                "platform"    => AgentController::getOs($request->header("user_agent")),
-                "useragent"   => $request->header("user_agent")
+                "browser" => AgentController::getBrowser($request->header("user_agent")),
+                "platform" => AgentController::getOs($request->header("user_agent")),
+                "useragent" => $request->header("user_agent")
             ]
         ); // TODO add this to basecontroller
         $url = $url->url->url;
@@ -135,9 +136,9 @@ class UrlShorterController extends BaseController
     {
 
         $user_id = Auth::user()->id;
-        $url_id  = Url::select("id")->where("url", "LIKE", "%$request->search%")->get();
+        $url_id = Url::select("id")->where("url", "LIKE", "%$request->search%")->get();
 
-        $data  = ShortUrl::with("url")->where("user_id", $user_id)->whereIn("url_id", $url_id)->orderBy("created_at", "desc")->get();
+        $data = ShortUrl::with("url")->where("user_id", $user_id)->whereIn("url_id", $url_id)->orderBy("created_at", "desc")->get();
         $count = count($data);
 
         if (count($data) == 0)

@@ -4,11 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ShortUrl;
+use App\Models\UserJobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends BaseController
 {
+    public function userHome(Request $request){
+        return $this->success("logged in",'checks user logged in or no');
+    }
+
+
     public function userClicks(Request $request)
     {
 
@@ -29,5 +35,7 @@ class UserController extends BaseController
             :  $this->success($data, "all short urls for this user (with clicks count)");
     }
     // todo
+
+
 
 }
