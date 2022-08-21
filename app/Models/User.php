@@ -54,8 +54,14 @@ class User extends Authenticatable
             "id", "id");
     }
 
-    public function urls(){
-        return $this->hasMany(Url::class,"user_id");
+    public function urls()
+    {
+        return $this->hasMany(Url::class, "user_id");
+    }
+
+    public function jobs()
+    {
+        return $this->hasMany(UserJobs::class, 'user_id');
     }
 
 }

@@ -13,6 +13,7 @@ use App\Models\ShortUrlCount;
 use App\Models\ShortUrlMaxId;
 use App\Models\Url;
 use App\Models\User;
+use App\Models\UserJobs;
 use Faker\Provider\Base;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
@@ -65,13 +66,10 @@ class UrlShorterController extends BaseController
     public function store(UrlRequest $request)
     {
 
-
         $url = $request->url;
 
         if ($this->regexUrl($url))
             $url = $url . "/";
-
-        global $data;
 
         $url_id = $this->FindOrNewUrl($url);
 
@@ -79,13 +77,19 @@ class UrlShorterController extends BaseController
 
         $count = $request->count;
 
-        for ($i = 0; $i < 1000; $i++)
-            ShortUrlJob::dispatch($url_id, $count, $user_id);
-die;
-        if ($data)
-            return $this->success($data, "$request->count short urls created for $request->url", 201);
+        $job = UserJobs::create([
+            'user_id' => $user_id,
+            'url_id'  => $url_id,
+            'count'   => $count,
+            'status'  => 'queue'
+        ]);
+
+        ShortUrlJob::dispatch($url_id, $count, $user_id, $job);
+
+        if ($job)
+            return $this->success($job, "your request to create : $request->count short urls for url : $request->url submitted", 201);
         else
-            return $this->error("no", 500);
+            return $this->error("failed", 500);
 //            return $this->error("create failed", 500);
 
 

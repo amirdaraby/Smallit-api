@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Http\Controllers\Api\BaseController;
 use App\Models\ShortUrl;
 use App\Models\ShortUrlMaxId;
+use App\Models\UserJobs;
 use Faker\Provider\Base;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -24,7 +25,7 @@ class ShortUrlJob implements ShouldQueue
     public $url; // ** url ID **
     public $count; // requested short urls (int)
     public $user; // ** user ID **
-    public $job;  // ** job ID **
+    public $userJob;  // ** job ID **
 
 
     /**
@@ -32,11 +33,12 @@ class ShortUrlJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($url, $count, $user)
+    public function __construct($url, $count, $user, UserJobs $userJob)
     {
-        $this->url   = (int)$url;
-        $this->count = (int)$count;
-        $this->user  = (int)$user;
+        $this->url     = (int)$url;
+        $this->count   = (int)$count;
+        $this->user    = (int)$user;
+        $this->userJob = $userJob;
     }
 
     /**
@@ -46,24 +48,20 @@ class ShortUrlJob implements ShouldQueue
      */
     public function handle()
     {
-//        sleep(5);
 
-        $shortUrlView = ShortUrlMaxId::query()->first();
-
+        $shortUrlView = ShortUrlMaxId::first();
         if ($shortUrlView->max_id == null)
             $shortUrlView->max_id = 99999;
 
 
-
-
         for ($i = 0; $i < $this->count; $i++) {
-//            dump($i);
+
             $insertData [$i] = [
                 'user_id'   => $this->user,
                 'url_id'    => $this->url,
                 'short_url' => BaseController::generateUrl(++$shortUrlView->max_id)
             ];
-//            dump($shortUrlView->max_id);
+
             sleep(0.3);
         }
 
@@ -72,11 +70,11 @@ class ShortUrlJob implements ShouldQueue
 
         $insertData = collect($insertData);
 
-//        dump($insertData);
+
         $chunks = $insertData->chunk(10000);
         dump("data chunked");
 
-        dump($chunks->toArray());
+
         foreach ($chunks->toArray() as $chunk) {
             sleep(0.7);
             ShortUrl::insert($chunk);
@@ -84,6 +82,8 @@ class ShortUrlJob implements ShouldQueue
         }
         dump("mission completed !");
 
+        UserJobs::query()->find($this->userJob->id)
+            ->update(['status' => 'created']);
     }
 
 }

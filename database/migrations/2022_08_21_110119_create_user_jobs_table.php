@@ -21,6 +21,10 @@ return new class extends Migration
             $table->foreign('user_id')->on('users')
                 ->references('id')->onDelete('cascade');
 
+            $table->string('url_id');
+
+            $table->integer('count');
+
             $table->enum('status',[
                 'queue',
                 'created',

@@ -27,4 +27,8 @@ class Url extends Model
         return $this->belongsTo(User::class, "user_id");
     }
 
+    public function jobs(){
+        return $this->hasMany(UserJobs::class, "url_id");
+    }
+
 }
