@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('short_urls', function (Blueprint $table) {
 
-            $table->id();
+            $table->id()->autoIncrement()->startingValue(100000);
             $table->string("short_url");
 
             $table->unsignedBigInteger("user_id");

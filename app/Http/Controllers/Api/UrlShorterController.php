@@ -67,13 +67,12 @@ class UrlShorterController extends BaseController
 
 
         $url = $request->url;
-//        return $this->FindOrNewUrl($url);
+
         if ($this->regexUrl($url))
             $url = $url . "/";
 
         global $data;
 
-//return $this->generateUrl(45001,6);
         $url_id = $this->FindOrNewUrl($url);
 
         $user_id = Auth::user()->id;
@@ -82,19 +81,7 @@ class UrlShorterController extends BaseController
 
         for ($i = 0; $i < 1000; $i++)
             ShortUrlJob::dispatch($url_id, $count, $user_id);
-// todo fix
-        die;
-        for ($i = 0; $i < $request->count; $i++) {
-            $data [$i] = [
-                "short_url" => Str::random(6),
-                "url_id"    => $url_id,
-                "user_id"   => $user_id,
-            ];
-        }
-
-
-        $data = ShortUrl::insert($data);
-
+die;
         if ($data)
             return $this->success($data, "$request->count short urls created for $request->url", 201);
         else

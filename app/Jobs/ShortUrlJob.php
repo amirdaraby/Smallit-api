@@ -22,8 +22,9 @@ class ShortUrlJob implements ShouldQueue
 
 
     public $url; // ** url ID **
-    public $count;
+    public $count; // requested short urls (int)
     public $user; // ** user ID **
+    public $job;  // ** job ID **
 
 
     /**
@@ -50,7 +51,9 @@ class ShortUrlJob implements ShouldQueue
         $shortUrlView = ShortUrlMaxId::query()->first();
 
         if ($shortUrlView->max_id == null)
-            $shortUrlView->max_id = 0;
+            $shortUrlView->max_id = 99999;
+
+
 
 
         for ($i = 0; $i < $this->count; $i++) {
@@ -60,9 +63,11 @@ class ShortUrlJob implements ShouldQueue
                 'url_id'    => $this->url,
                 'short_url' => BaseController::generateUrl(++$shortUrlView->max_id)
             ];
-            dump($shortUrlView->max_id);
+//            dump($shortUrlView->max_id);
             sleep(0.3);
         }
+
+
         dump("created 2d array");
 
         $insertData = collect($insertData);
@@ -73,11 +78,12 @@ class ShortUrlJob implements ShouldQueue
 
         dump($chunks->toArray());
         foreach ($chunks->toArray() as $chunk) {
-            sleep(2);
+            sleep(0.7);
             ShortUrl::insert($chunk);
             dump("inserting");
         }
         dump("mission completed !");
 
     }
+
 }

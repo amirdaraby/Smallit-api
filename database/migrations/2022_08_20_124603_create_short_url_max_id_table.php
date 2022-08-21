@@ -28,6 +28,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('short_url_max_id');
+        \Illuminate\Support\Facades\DB::statement('drop view if exist short_url_max_id');
     }
 };

@@ -63,9 +63,9 @@ class BaseController extends Controller
 
         $shortUrl = base_convert($id , 10, 36);
         $time = Str::reverse(md5(microtime(true)));
-        $shortUrl = $shortUrl.$time;
+//        $shortUrl = $shortUrl.$time;
 
-        return Str::substr($shortUrl,0,$length);
+        return $shortUrl;
     }
 
 
