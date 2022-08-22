@@ -38,7 +38,7 @@ class UrlShorterController extends BaseController
         return $short;
     }
 
-    public function index(): object
+    public function index(Request $request): object
     {
 
 
@@ -52,7 +52,7 @@ class UrlShorterController extends BaseController
             }]);
         }])->select("url_id")
             ->where("user_id", $user->id)->groupBy('url_id')
-            ->get();
+            ->paginate(10);
         if ($url->isEmpty())
             return $this->error("this user does not have short urls", 404, null);
         return $this->success(["user" => $user, "url" => $url], "user's shorturl data");
@@ -64,13 +64,13 @@ class UrlShorterController extends BaseController
      * @param UrlRequest $request
      * @return string
      */
-    public function store(Request $request)
+    public function store(UrlRequest $request)
     {
 
         $url = $request->url;
 
-        if ($this->regexUrl($url))
-            $url = $url . "/";
+//        if ($this->regexUrl($url))
+//            $url = $url . "/";
 
         $url_id = $this->FindOrNewUrl($url);
 
@@ -124,7 +124,7 @@ class UrlShorterController extends BaseController
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
             ->paginate(10);
-
+// todo fix this query.
         return
             empty($shorturls)
                 ? $this->success(["url" => $id], "ok", 200)

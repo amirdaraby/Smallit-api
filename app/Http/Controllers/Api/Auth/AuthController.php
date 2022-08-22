@@ -23,7 +23,7 @@ class AuthController extends BaseController
 
 
             return $this->success($success, "user login", 202);
-        } else return $this->error("user not found", 400);
+        } else return $this->error(["user" => ["user not found"]], 400);
     }
 
 

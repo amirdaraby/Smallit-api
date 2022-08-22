@@ -28,7 +28,8 @@ class ViewController extends BaseController
 
         $reach = Click::query()->select("platform", "browser", "created_at")->orderBy("created_at", "desc")->where("shorturl_id", $url->id)
             ->paginate(10);
-
+        if ($reach->isEmpty())
+            return $this->error("no views",404);
         return $this->success(["shorturl" => $url->loadCount("clicks")->load(["url" => function($q){$q->select('id','url');}]), "clicks" => $reach], "all clicks of shorturl : $url->short_url");
     }
 
@@ -75,7 +76,11 @@ class ViewController extends BaseController
 
     public function getShortUrlWithCount(ShortUrl $url)
     {
-        return $this->success($url->loadCount("clicks")->load("url"),"short urls with count of clicks");
+        $response = $url->loadCount("clicks")->load("url");
+
+        if ($response->clicks_count == 0)
+        return $this->error('no views',404);
+        return $this->success($response,"short urls with count of clicks");
     }
 
     public function getBrowsersByDate(ShortUrl $url)
