@@ -1,4 +1,4 @@
-# Url Shortener
+# Small it
 
 ### latest release: [v1.0.0]
 
@@ -6,7 +6,7 @@
 
 ## Introduction
 
-url-shortener is an open source api based
+**Smallit** is an open source api based
 web application which I have developed with Laravel.
 
 my target is having an easy to use url shortener with most features.
