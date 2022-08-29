@@ -66,8 +66,8 @@ Route::group(["prefix" => "/v1"], function () {
 
             Route::get("/clicks/count", [\App\Http\Controllers\Api\UserController::class, "userClicks"])->name("api.user_clicks");
             Route::get("/url/all", [\App\Http\Controllers\Api\UserController::class, "userShortUrls"])->name("api.user_shorturls");
-            Route::resource('/requests', \App\Http\Controllers\RequestsController::class)->parameter('requests', 'id')->except(['create', 'edit', 'update']);
-            Route::delete('/delete/requests', [\App\Http\Controllers\RequestsController::class, 'destroyAll'])->name('api.destroy-requests');
+            Route::resource('/requests', \App\Http\Controllers\Api\RequestsController::class)->parameter('requests', 'id')->except(['create', 'edit', 'update']);
+            Route::delete('/delete/requests', [\App\Http\Controllers\Api\RequestsController::class, 'destroyAll'])->name('api.destroy-requests');
             Route::get('/home', [\App\Http\Controllers\Api\UserController::class, 'userHome'])->name('api.user-home');
             Route::get("/guest", [\App\Http\Controllers\Api\UserController::class, "userNotHome"])->name("api.user-not-home");
         });
