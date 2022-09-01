@@ -1,8 +1,8 @@
 # Small it
 
-### latest release: [v1.0.0]
+### latest release: [v1.1.0]
 
-[v1.0.0]:https://github.com/amirdaraby/url-shortener/releases/tag/v1.0.0
+[v1.0.0]:https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.0
 
 ## Introduction
 
