@@ -2,7 +2,7 @@
 
 ### latest release: [v1.1.1]
 
-[v1.1.0]:https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.1
+[v1.1.1]:https://github.com/amirdaraby/url-shortener/releases/tag/v1.1.1
 
 ## Introduction
 
