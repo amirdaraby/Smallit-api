@@ -15,6 +15,7 @@ use App\Models\Url;
 use App\Models\User;
 use App\Models\UserJobs;
 use Faker\Provider\Base;
+use http\Header;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,17 +27,6 @@ use function PHPUnit\Framework\isEmpty;
 class UrlShorterController extends BaseController
 {
 
-    public function clickTest()
-    {
-
-        $short = User::with(["shorturl" => function ($q) {
-            $q->withCount("clicks");
-        }])
-            ->get();
-
-
-        return $short;
-    }
 
     public function index(Request $request): object
     {
@@ -76,7 +66,19 @@ class UrlShorterController extends BaseController
 
         $user_id = Auth::user()->id;
 
+<<<<<<< HEAD
         $count = $request->count;
+=======
+        for ($i = 0; $i < $request->count; $i++) {
+            $data [$i] = [
+                "short_url"  => Str::random(5),
+                "url_id"     => $short_url_id,
+                "user_id"    => $user_id,
+                "created_at" => now()->format("Y/m/d H:i:s"),
+                "updated_at" => now()->format("Y/m/d H:i:s")
+            ];
+        }
+>>>>>>> dev
 
         $job = UserJobs::create([
             'user_id' => $user_id,
@@ -102,8 +104,15 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url, Request $request): object
     {
+<<<<<<< HEAD
 
         Click::create(
+=======
+//        header("Access-Control-Allow-Origin: *");
+//        header("Access-Control-Allow-Headers: *");
+
+        Click::updateOrCreate(
+>>>>>>> dev
             [
                 "uid" => $request->header("uid"),
                 "shorturl_id" => $url->id,
@@ -113,7 +122,8 @@ class UrlShorterController extends BaseController
             ]
         ); // TODO add this to basecontroller
         $url = $url->url->url;
-        return $this->success($url, "ok");
+        return $this->success($url,"ok");
+
     }
 
     public function urlStats(Url $id)
@@ -124,7 +134,11 @@ class UrlShorterController extends BaseController
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
             ->paginate(10);
+<<<<<<< HEAD
 // todo fix this query.
+=======
+
+>>>>>>> dev
         return
             empty($shorturls)
                 ? $this->success(["url" => $id], "ok", 200)
