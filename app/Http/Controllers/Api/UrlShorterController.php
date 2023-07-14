@@ -56,16 +56,9 @@ class UrlShorterController extends BaseController
      */
     public function store(UrlRequest $request)
     {
-
         $url = $request->url;
-
-//        if ($this->regexUrl($url))
-//            $url = $url . "/";
-
         $url_id = $this->FindOrNewUrl($url);
-
         $user_id = Auth::user()->id;
-
         $count = $request->count;
 
         $job = UserJobs::create([
@@ -75,15 +68,12 @@ class UrlShorterController extends BaseController
             'status' => 'queue'
         ]);
 
-        ShortUrlJob::dispatch($url_id, $count, $user_id, $job);
+        ShortUrlJob::dispatch($url_id, $count, $user_id, $job)->onQueue("default");
 
         if ($job)
             return $this->success($job, "your request to create : $request->count short urls for url : $request->url submitted", 201);
         else
             return $this->error("failed", 500);
-//            return $this->error("create failed", 500);
-
-
     }
 
     /**

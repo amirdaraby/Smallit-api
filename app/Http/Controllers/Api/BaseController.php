@@ -40,7 +40,7 @@ class BaseController extends Controller
             $LongUrl = Url::create([
                 "url"     => $url,
                 "user_id" => Auth::id(),
-//                "created_at" => now()
+                "created_at" => now()
             ]);
 
             return $LongUrl->id;
