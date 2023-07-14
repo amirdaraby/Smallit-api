@@ -66,19 +66,7 @@ class UrlShorterController extends BaseController
 
         $user_id = Auth::user()->id;
 
-<<<<<<< HEAD
         $count = $request->count;
-=======
-        for ($i = 0; $i < $request->count; $i++) {
-            $data [$i] = [
-                "short_url"  => Str::random(5),
-                "url_id"     => $short_url_id,
-                "user_id"    => $user_id,
-                "created_at" => now()->format("Y/m/d H:i:s"),
-                "updated_at" => now()->format("Y/m/d H:i:s")
-            ];
-        }
->>>>>>> dev
 
         $job = UserJobs::create([
             'user_id' => $user_id,
@@ -104,15 +92,8 @@ class UrlShorterController extends BaseController
      */
     public function show(ShortUrl $url, Request $request): object
     {
-<<<<<<< HEAD
 
         Click::create(
-=======
-//        header("Access-Control-Allow-Origin: *");
-//        header("Access-Control-Allow-Headers: *");
-
-        Click::updateOrCreate(
->>>>>>> dev
             [
                 "uid" => $request->header("uid"),
                 "shorturl_id" => $url->id,
@@ -120,11 +101,10 @@ class UrlShorterController extends BaseController
                 "platform" => AgentController::getOs($request->header("user_agent")),
                 "useragent" => $request->header("user_agent")
             ]
-        ); // TODO add this to basecontroller
-        $url = $url->url->url;
-        return $this->success($url,"ok");
+        );
 
-    }
+        $url = $url->url->url;
+        return $this->success($url, "ok");    }
 
     public function urlStats(Url $id)
     {
@@ -134,11 +114,7 @@ class UrlShorterController extends BaseController
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
             ->paginate(10);
-<<<<<<< HEAD
-// todo fix this query.
-=======
-
->>>>>>> dev
+            // todo fix this query.
         return
             empty($shorturls)
                 ? $this->success(["url" => $id], "ok", 200)

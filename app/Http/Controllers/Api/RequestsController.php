@@ -35,7 +35,7 @@ class RequestsController extends BaseController
 
     public function show($id)
     {
-        // todo
+        //
     }
 
     public function edit($id)

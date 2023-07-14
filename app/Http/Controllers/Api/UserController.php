@@ -34,7 +34,6 @@ class UserController extends BaseController
         return $data->isEmpty() ? $this->error("there is no short urls for this user")
             :  $this->success($data, "all short urls for this user (with clicks count)");
     }
-    // todo
 
 
 
