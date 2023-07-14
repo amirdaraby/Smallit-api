@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         \Illuminate\Support\Facades\DB::statement('
             
-            CREATE VIEW short_url_max_id
+            CREATE OR REPLACE VIEW short_url_max_id
             AS 
             SELECT MAX(id) AS max_id FROM short_urls
          
