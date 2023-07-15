@@ -2,27 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\GenerateController;
-use App\Http\Requests\FindRequest;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 use App\Jobs\ShortUrlJob;
 use App\Models\Click;
 use App\Models\ShortUrl;
-use App\Models\ShortUrlCount;
-use App\Models\ShortUrlMaxId;
 use App\Models\Url;
-use App\Models\User;
 use App\Models\UserJobs;
-use Faker\Provider\Base;
-use http\Header;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use App\Http\Controllers\Api\AgentController;
-use function PHPUnit\Framework\isEmpty;
 
 class UrlShorterController extends BaseController
 {
@@ -30,10 +18,6 @@ class UrlShorterController extends BaseController
 
     public function index(Request $request): object
     {
-
-
-//        $url = ShortUrl::select("url_id")->where("user_id",$user->id);
-
         $user = Auth::user();
 
         $url = ShortUrl::with(["url" => function ($q) use ($user) {
@@ -68,7 +52,7 @@ class UrlShorterController extends BaseController
             'status' => 'queue'
         ]);
 
-        ShortUrlJob::dispatch($url_id, $count, $user_id, $job)->onQueue("default");
+        $job = ShortUrlJob::dispatch($url_id, $count, $user_id, $job)->onQueue("my_queue");
 
         if ($job)
             return $this->success($job, "your request to create : $request->count short urls for url : $request->url submitted", 201);
@@ -94,7 +78,8 @@ class UrlShorterController extends BaseController
         );
 
         $url = $url->url->url;
-        return $this->success($url, "ok");    }
+        return $this->success($url, "ok");
+    }
 
     public function urlStats(Url $id)
     {
@@ -104,7 +89,7 @@ class UrlShorterController extends BaseController
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
             ->paginate(10);
-            // todo fix this query.
+        // todo fix this query.
         return
             empty($shorturls)
                 ? $this->success(["url" => $id], "ok", 200)
