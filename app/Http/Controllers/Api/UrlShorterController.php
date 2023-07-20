@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 class UrlShorterController extends BaseController
 {
 
-
     public function index(Request $request): object
     {
         $user = Auth::user();
@@ -52,7 +51,8 @@ class UrlShorterController extends BaseController
             'status' => 'queue'
         ]);
 
-        $job = ShortUrlJob::dispatch($url_id, $count, $user_id, $job)->onQueue("my_queue");
+
+        $job = ShortUrlJob::dispatch($url_id, $count, $user_id, $job);
 
         if ($job)
             return $this->success($job, "your request to create : $request->count short urls for url : $request->url submitted", 201);

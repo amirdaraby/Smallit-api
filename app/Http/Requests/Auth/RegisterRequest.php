@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginRequest extends FormRequest
+class RegisterRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,14 +27,10 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            "email"    => "required|string|email",
-            "password" => "required"
+            "name"=> "required|string",
+            "email"=> "required|unique:users,email|string|email",
+            "password"=> "required",
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException((BaseController::error($validator->errors(), 400)));
     }
 
 }
