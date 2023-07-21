@@ -15,10 +15,7 @@ class ShortUrlJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
-    public $url; // ** url ID **
-    public $count; // requested short urls (int)
-    public $user; // ** user ID **
-    public $userJob;  // ** job ID **
+    public $url, $count, $user, $userJob;
 
     public function __construct($url, $count, $user, UserJobs $userJob)
     {
@@ -55,8 +52,11 @@ class ShortUrlJob implements ShouldQueue
             ShortUrl::insert($chunk);
         }
 
-        UserJobs::query()->find($this->userJob->id)
-            ->update(['status' => 'created']);
+        $this->userJob->update([
+           'status' => 'created'
+        ]);
+//        UserJobs::query()->find($this->userJob->id)
+//            ->update(['status' => 'created']);
     }
 
 
