@@ -4,12 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 
-//use Hashids\Hashids;
 use App\Models\Url;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class BaseController extends Controller
 {
@@ -35,14 +31,13 @@ class BaseController extends Controller
     {
         $LongUrl = Url::where([["url", "=", $url], ["user_id", "=", Auth::id()]])->first();
 
-
         if (!isset($LongUrl)) {
             $LongUrl = Url::create([
                 "url"     => $url,
                 "user_id" => Auth::id(),
                 "created_at" => now()
             ]);
-
+            // todo url controller
             return $LongUrl->id;
         } else return $LongUrl->id;
 
@@ -60,12 +55,8 @@ class BaseController extends Controller
 
     public static function generateUrl(int $id,int $length = 6)
     {
-
-        $shortUrl = base_convert($id , 10, 36);
-        $time = Str::reverse(md5(microtime(true)));
-//        $shortUrl = $shortUrl.$time;
-
-        return $shortUrl;
+        // todo short url controller
+        return base_convert($id , 10, 36);
     }
 
 

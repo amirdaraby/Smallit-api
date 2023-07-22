@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Spatie\FlareClient\Api;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Http\Controllers\Api\BaseController;
 
-class UrlRequest extends FormRequest
+class UrlRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.

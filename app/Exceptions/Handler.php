@@ -10,8 +10,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Validation\ValidationException;
+use Spatie\FlareClient\Http\Exceptions\NotFound;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 use App\Http\Controllers\Api\BaseController;
+
 class Handler extends ExceptionHandler
 {
 
@@ -55,18 +58,23 @@ class Handler extends ExceptionHandler
 
         });
     }
+
     public function render($request, Throwable $e)
     {
         if ($e instanceof ModelNotFoundException) {
-            return BaseController::error( "record not found" , 404);
+            return BaseController::error("record not found", 404);
         }
 
-        if ($e instanceof AuthenticationException){
-            return  BaseController::error("Unauthorized" , 401);
+        if ($e instanceof AuthenticationException) {
+            return BaseController::error("Unauthorized", 401);
         }
 
-        if ($e instanceof AuthorizationException){
+        if ($e instanceof AuthorizationException) {
             return BaseController::error("Forbidden", 403);
         }
+        if ($e instanceof NotFoundHttpException) {
+            return BaseController::error("Not Found", 404);
+        }
+
     }
 }

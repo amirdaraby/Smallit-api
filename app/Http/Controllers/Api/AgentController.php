@@ -34,7 +34,6 @@ class AgentController extends BaseController
             '/macintosh|mac os x/i' => 'Mac OS',
             '/mac_powerpc/i'        => 'Mac OS',
             '/linux/i'              => 'Linux',
-//            '/ubuntu/i'             => 'Ubuntu',
             '/iphone/i'             => 'iPhone',
             '/ipod/i'               => 'iPod',
             '/ipad/i'               => 'iPad',
