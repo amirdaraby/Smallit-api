@@ -55,8 +55,7 @@ class ShortUrlJob implements ShouldQueue
         $this->userJob->update([
            'status' => 'created'
         ]);
-//        UserJobs::query()->find($this->userJob->id)
-//            ->update(['status' => 'created']);
+
     }
 
 
