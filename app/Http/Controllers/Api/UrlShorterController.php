@@ -9,6 +9,7 @@ use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\UserJobs;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,9 +72,9 @@ class UrlShorterController extends BaseController
             [
                 "uid" => $request->header("uid"),
                 "shorturl_id" => $url->id,
-                "browser" => AgentController::getBrowser($request->header("user_agent")),
-                "platform" => AgentController::getOs($request->header("user_agent")),
-                "useragent" => $request->header("user_agent")
+                "browser" => AgentController::getBrowser($request->header("user-agent")),
+                "platform" => AgentController::getOs($request->header("user-agent")),
+                "useragent" => $request->header("user-agent"),
             ]
         );
 
