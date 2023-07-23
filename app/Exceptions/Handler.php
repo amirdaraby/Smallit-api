@@ -2,17 +2,12 @@
 
 namespace App\Exceptions;
 
-use Faker\Provider\Base;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Notifications\Messages\DatabaseMessage;
-use Illuminate\Validation\ValidationException;
-use Spatie\FlareClient\Http\Exceptions\NotFound;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 use App\Http\Controllers\Api\BaseController;
 
 class Handler extends ExceptionHandler
@@ -52,29 +47,28 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
 
+        $this->reportable(function (NotFoundHttpException $e) {
+            return BaseController::error("Not found", 404);
+        })->stop();
+
+        $this->reportable(function (ModelNotFoundException $e) {
+            return BaseController::error("Record not found", 404);
+        })->stop();
+
+        $this->reportable(function (AuthorizationException $e) {
+            return BaseController::error("Forbidden", 403);
+        });
+
+        $this->reportable(function (AuthenticationException $e) {
+            return BaseController::error("Unauthorized", 401);
+        });
+
+        $this->reportable(function (QueryException $e) {
+            return BaseController::error("Server error", 500);
         });
     }
 
-    public function render($request, Throwable $e)
-    {
-        if ($e instanceof ModelNotFoundException) {
-            return BaseController::error("record not found", 404);
-        }
-
-        if ($e instanceof AuthenticationException) {
-            return BaseController::error("Unauthorized", 401);
-        }
-
-        if ($e instanceof AuthorizationException) {
-            return BaseController::error("Forbidden", 403);
-        }
-        if ($e instanceof NotFoundHttpException) {
-            return BaseController::error("Not Found", 404);
-        }
-
-    }
 }

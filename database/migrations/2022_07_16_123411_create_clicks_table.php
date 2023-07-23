@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('clicks', function (Blueprint $table) {
             $table->id();
-            $table->string("uid")->nullable(false);
+            $table->string("uid")->nullable(true);
 
             $table->unsignedBigInteger("shorturl_id");
             $table->foreign("shorturl_id")->on("short_urls")
@@ -31,7 +31,8 @@ return new class extends Migration {
                 "iPad",
                 "BlackBerry",
                 "Windows Phone",
-                "Mobile"])->nullable(false);
+                "Mobile",
+                "Unknown"])->nullable(false);
 
             $table->enum("browser", ["Samsung Browser",
                 "Edge",
@@ -42,12 +43,12 @@ return new class extends Migration {
                 "Nokia Browser",
                 "Safari",
                 "Internet Explorer",
-                "Unknown"]);
+                "Unknown"])->nullable(false);
 
 
             $table->string("useragent");
 
-            $table->timestamp("created_at");
+            $table->timestamp("created_at")->default(now()->carbonize());
         });
     }
 
