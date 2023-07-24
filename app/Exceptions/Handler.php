@@ -4,9 +4,10 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\FlareClient\Http\Exceptions\NotFound;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Controllers\Api\BaseController;
 
@@ -50,23 +51,30 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
 
-        $this->reportable(function (NotFoundHttpException $e) {
+        if (config("app.debug"))
+            return;
+
+        $this->renderable(function (NotFoundHttpException $e) {
             return BaseController::error("Not found", 404);
-        })->stop();
+        });
 
-        $this->reportable(function (ModelNotFoundException $e) {
+        $this->renderable(function (MethodNotAllowedHttpException $e) {
+            return BaseController::error("Method not allowed", 405);
+        });
+
+        $this->renderable(function (NotFound $e) {
             return BaseController::error("Record not found", 404);
-        })->stop();
+        });
 
-        $this->reportable(function (AuthorizationException $e) {
+        $this->renderable(function (AuthorizationException $e) {
             return BaseController::error("Forbidden", 403);
         });
 
-        $this->reportable(function (AuthenticationException $e) {
+        $this->renderable(function (AuthenticationException $e) {
             return BaseController::error("Unauthorized", 401);
         });
 
-        $this->reportable(function (QueryException $e) {
+        $this->renderable(function (QueryException $e) {
             return BaseController::error("Server error", 500);
         });
     }
