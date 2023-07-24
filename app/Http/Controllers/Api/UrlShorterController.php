@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 use App\Jobs\ShortUrlJob;
+use App\Jobs\StoreClickJob;
 use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
@@ -68,15 +69,7 @@ class UrlShorterController extends BaseController
     public function show(ShortUrl $url, Request $request): object
     {
 
-        Click::create(
-            [
-                "uid" => $request->header("uid"),
-                "shorturl_id" => $url->id,
-                "browser" => AgentController::getBrowser($request->header("user-agent")),
-                "platform" => AgentController::getOs($request->header("user-agent")),
-                "useragent" => $request->header("user-agent"),
-            ]
-        );
+        StoreClickJob::dispatch($request->header("user-agent"), $request->header("uid"), $url->id);
 
         $url = $url->url->url;
         return $this->success($url, "ok");
@@ -90,7 +83,7 @@ class UrlShorterController extends BaseController
             ->withCount("clicks")
             ->orderBy("clicks_count", "desc")
             ->paginate(10);
-        // todo fix this query.
+
         return
             empty($shorturls)
                 ? $this->success(["url" => $id], "ok", 200)
