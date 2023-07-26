@@ -28,9 +28,9 @@ class ShortUrlJob implements ShouldQueue
     public function handle()
     {
 
-        $shortUrlView = ShortUrlMaxId::first();
-        if ($shortUrlView->max_id == null)
-            $shortUrlView->max_id = 99999;
+        $maxId = ShortUrl::query()->max("id");
+        if ($maxId == null)
+            $maxId = 99999;
 
 
         for ($i = 0; $i < $this->count; $i++) {
@@ -38,7 +38,7 @@ class ShortUrlJob implements ShouldQueue
             $insertData [$i] = [
                 'user_id'   => $this->user,
                 'url_id'    => $this->url,
-                'short_url' => BaseController::generateUrl(++$shortUrlView->max_id)
+                'short_url' => BaseController::generateUrl(++$maxId)
             ];
 
         }

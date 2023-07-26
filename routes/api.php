@@ -34,11 +34,9 @@ Route::group(["prefix" => "/v1"], function () {
         Route::group(["prefix" => "/url"], function () {
             Route::resource("/", UrlShorterController::class)->except(["show"]);
             Route::get("/{id}/stats", [UrlShorterController::class, "urlStats"])->name("api.url_stats");
-            Route::post("/search", [UrlShorterController::class, "search"])->name("api.search"); // todo change to get method - done
+            Route::post("/search", [UrlShorterController::class, "search"])->name("api.search");
             Route::get("/header", [UrlShorterController::class, "header"])->name("api.header");
-            Route::post("/find", [UrlShorterController::class, "find"])->name("api.find"); // todo change to get method - done
-
-
+            Route::post("/find", [UrlShorterController::class, "find"])->name("api.find");
         });
 
         /*
@@ -76,9 +74,3 @@ Route::group(["prefix" => "/v1"], function () {
 
 
 });
-
-
-
-
-
-
