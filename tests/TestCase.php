@@ -2,10 +2,8 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\File;
-use Mockery\Container;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -18,5 +16,10 @@ abstract class TestCase extends BaseTestCase
             File::put($path,'');
 
 
+    }
+    public function tearDown(): void
+    {
+        File::delete(database_path().'/database.sqlite');
+        parent::tearDown();
     }
 }

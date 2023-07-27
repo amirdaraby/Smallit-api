@@ -37,7 +37,7 @@ class BaseController extends Controller
                 "user_id" => Auth::id(),
                 "created_at" => now()
             ]);
-            // todo url controller
+            // todo add this to repository
             return $LongUrl->id;
         } else return $LongUrl->id;
 

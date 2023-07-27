@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Http\Controllers\Api\BaseController;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
