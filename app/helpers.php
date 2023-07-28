@@ -9,15 +9,15 @@ if (!function_exists(!"generateShortUrl")) {
 }
 
 if (!function_exists("responseSuccess")) {
-    function responseSuccess($data, $message = "OK", $status = 200)
+    function responseSuccess($data, $message = null, $status = 200)
     {
-        return response()->json(["data" => $data, "message" => $message], $status);
+        return response()->json(["status" => "success", "data" => $data, "message" => $message], $status);
     }
 }
 
 if (!function_exists("responseError")) {
-    function responseError($message = "Error", $status = 422, $data = null)
+    function responseError($message = null, $status = 422, $data = null)
     {
-        return response()->json(["data" => $data, "message" => $message], $status);
+        return response()->json(["status" => "error", "data" => $data, "message" => $message], $status);
     }
 }
