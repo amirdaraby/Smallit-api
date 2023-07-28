@@ -18,9 +18,9 @@ class AuthController extends BaseController
             $auth = Auth::user();
             $response['token'] = $auth->createToken('LaravelSanctumAuth')->plainTextToken;
             $response['name'] = $auth->name;
-
-            return $this->success($response, "user login", 202);
-        } else return $this->error(["user" => ["user not found"]], 400);
+            $response['email'] = $auth->email;
+            return responseSuccess($response, "User login", 202);
+        } else return responseError("Email or Password is invalid", 400);
     }
 
 
@@ -35,8 +35,9 @@ class AuthController extends BaseController
 
         $response['token'] = $user->createToken("token")->plainTextToken;
         $response['name'] = $user->name;
+        $response['email'] = $user->email;
 
-        return $this->success($response, 'User registered', 201);
+        return responseSuccess($response, 'User registered', 201);
 
     }
 
@@ -44,7 +45,7 @@ class AuthController extends BaseController
     {
         $deleted = Auth::user()->tokens()->delete();
         if ($deleted)
-            return $this->success([], "logged out !");
+            return responseSuccess([], "logged out !");
     }
 
 }

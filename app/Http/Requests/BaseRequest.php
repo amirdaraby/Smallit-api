@@ -11,6 +11,6 @@ class BaseRequest extends FormRequest
 {
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException((BaseController::error($validator->errors(), 400)));
+        throw new HttpResponseException(responseError($validator->errors(), 400));
     }
 }

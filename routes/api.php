@@ -29,7 +29,7 @@ Route::group(["prefix" => "/v1"], function () {
      * */
 
     Route::group(["middleware" => "auth:sanctum"], function () {
-        Route::get("/logout", [AuthController::class, "logout"])->name("api.logout");
+        Route::delete("/logout", [AuthController::class, "logout"])->name("api.logout");
 
         Route::group(["prefix" => "/url"], function () {
             Route::resource("/", UrlShorterController::class)->except(["show"]);

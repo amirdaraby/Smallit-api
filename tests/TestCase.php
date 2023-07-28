@@ -14,12 +14,5 @@ abstract class TestCase extends BaseTestCase
         $path = database_path().'/database.sqlite';
         if (! file_exists($path) )
             File::put($path,'');
-
-
-    }
-    public function tearDown(): void
-    {
-        File::delete(database_path().'/database.sqlite');
-        parent::tearDown();
     }
 }

@@ -55,27 +55,27 @@ class Handler extends ExceptionHandler
             return;
 
         $this->renderable(function (NotFoundHttpException $e) {
-            return BaseController::error("Not found", 404);
+            return responseError("Not found", 404);
         });
 
         $this->renderable(function (MethodNotAllowedHttpException $e) {
-            return BaseController::error("Method not allowed", 405);
+            return responseError("Method not allowed", 405);
         });
 
         $this->renderable(function (NotFound $e) {
-            return BaseController::error("Record not found", 404);
+            return responseError("Record not found", 404);
         });
 
         $this->renderable(function (AuthorizationException $e) {
-            return BaseController::error("Forbidden", 403);
+            return responseError("Forbidden", 403);
         });
 
         $this->renderable(function (AuthenticationException $e) {
-            return BaseController::error("Unauthorized", 401);
+            return responseError("Unauthorized", 401);
         });
 
         $this->renderable(function (QueryException $e) {
-            return BaseController::error("Server error", 500);
+            return responseError("Server error", 500);
         });
     }
 

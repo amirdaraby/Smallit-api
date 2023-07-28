@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class HelpersTest extends TestCase
 {
-    public function test_generate_short_url_helper(): void
+    public function test_generate_short_url_helper_returns_valid_short_url(): void
     {
         $this->assertSame("2s", generateShortUrl(100));
     }

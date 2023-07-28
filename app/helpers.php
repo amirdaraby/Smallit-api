@@ -9,14 +9,14 @@ if (!function_exists(!"generateShortUrl")) {
 }
 
 if (!function_exists("responseSuccess")) {
-    function responseSuccess($data, $message = null, $status = 200)
+    function responseSuccess($data, $message = null, $status = 200): object
     {
         return response()->json(["status" => "success", "data" => $data, "message" => $message], $status);
     }
 }
 
 if (!function_exists("responseError")) {
-    function responseError($message = null, $status = 422, $data = null)
+    function responseError($message = null, $status = 422, $data = null): object
     {
         return response()->json(["status" => "error", "data" => $data, "message" => $message], $status);
     }
