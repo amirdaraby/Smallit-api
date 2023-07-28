@@ -72,4 +72,10 @@ class UserAgentTraitDetectOperatingSystemTest extends TestCase
         $this->assertSame("Web OS", $os);
     }
 
+    public function test_user_agent_trait_detects_os_unknown(): void
+    {
+        $os = $this->getOs("Some fake user agent just to dump you and get unknown result");
+        $this->assertSame("Unknown", $os);
+    }
+
 }

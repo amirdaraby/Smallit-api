@@ -58,4 +58,9 @@ class UserAgentTraitDetectBrowserTest extends TestCase
         $browser = $this->getBrowser("	Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko");
         $this->assertSame("Internet Explorer", $browser);
     }
+    public function test_user_agent_trait_detects_browser_unknown(): void
+    {
+        $os = $this->getBrowser("Some fake user agent just to dump you and get unknown result");
+        $this->assertSame("Unknown", $os);
+    }
 }
