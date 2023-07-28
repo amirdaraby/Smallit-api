@@ -6,15 +6,14 @@ use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 use App\Jobs\ShortUrlJob;
 use App\Jobs\StoreClickJob;
-use App\Models\Click;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\UserJobs;
-use Carbon\Carbon;
+use App\Traits\UserAgent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UrlShorterController extends BaseController
+class ShortUrlController extends BaseController
 {
 
     public function index(Request $request): object

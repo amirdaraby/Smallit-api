@@ -25,7 +25,7 @@ class LogoutRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            "token" => "required"
+
         ];
     }
 

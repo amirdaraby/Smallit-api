@@ -5,6 +5,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -33,6 +34,7 @@ class AuthTest extends TestCase
         $response->assertCreated();
     }
 
+
     public function test_register_creates_and_returns_personal_access_token(): void
     {
         $response = $this->postJson(route("api.register"), [
@@ -41,6 +43,7 @@ class AuthTest extends TestCase
             "password" => 123456789
         ])->getOriginalContent();
 
+        $this->assertNotNull(PersonalAccessToken::findToken($response["data"]["token"]));
         $this->assertArrayHasKey("token", $response["data"]);
     }
 
@@ -104,12 +107,13 @@ class AuthTest extends TestCase
         $this->assertArrayHasKey("email", $response["data"]);
     }
 
-    public function test_login_returns_personal_access_token_on_success(): void
+    public function test_login_creates_and_returns_personal_access_token_on_success(): void
     {
         $user = User::factory()->create();
 
         $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => "123456789"]);
 
+        $this->assertNotNull(PersonalAccessToken::findToken($response["data"]["token"]));
         $this->assertArrayHasKey("token", $response["data"]);
     }
 
@@ -122,6 +126,23 @@ class AuthTest extends TestCase
 
     public function test_logout_returns_success_status(): void
     {
+        $user = User::factory()->create();
+        $token = $user->createToken("token")->plainTextToken;
 
+        $response = $this->deleteJson(route("api.logout"), headers: ["Authorization" => "Bearer " . $token]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_logout_deletes_personal_access_token()
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken("token")->plainTextToken;
+
+        $this->deleteJson(route("api.logout"), headers: ["Authorization" => "Bearer " . $token]);
+
+        $token = PersonalAccessToken::findToken($token);
+
+        $this->assertNull($token);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\UrlShorterController;
+use App\Http\Controllers\Api\ShortUrlController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +19,7 @@ Route::group(["prefix" => "/v1"], function () {
 
     Route::post("/login", [AuthController::class, "login"])->name("api.login");
     Route::post("/register", [AuthController::class, "register"])->name("api.register");
-    Route::get("/show/{url}", [UrlShorterController::class, "show"])->name("api.show");
+    Route::get("/show/{url}", [ShortUrlController::class, "show"])->name("api.show");
 
 
     /*
@@ -32,11 +32,11 @@ Route::group(["prefix" => "/v1"], function () {
         Route::delete("/logout", [AuthController::class, "logout"])->name("api.logout");
 
         Route::group(["prefix" => "/url"], function () {
-            Route::resource("/", UrlShorterController::class)->except(["show"]);
-            Route::get("/{id}/stats", [UrlShorterController::class, "urlStats"])->name("api.url_stats");
-            Route::post("/search", [UrlShorterController::class, "search"])->name("api.search");
-            Route::get("/header", [UrlShorterController::class, "header"])->name("api.header");
-            Route::post("/find", [UrlShorterController::class, "find"])->name("api.find");
+            Route::resource("/", ShortUrlController::class)->except(["show"]);
+            Route::get("/{id}/stats", [ShortUrlController::class, "urlStats"])->name("api.url_stats");
+            Route::post("/search", [ShortUrlController::class, "search"])->name("api.search");
+            Route::get("/header", [ShortUrlController::class, "header"])->name("api.header");
+            Route::post("/find", [ShortUrlController::class, "find"])->name("api.find");
         });
 
         /*

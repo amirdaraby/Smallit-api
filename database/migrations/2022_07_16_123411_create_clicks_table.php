@@ -46,7 +46,7 @@ return new class extends Migration {
                 "Unknown"])->nullable(false);
 
 
-            $table->string("useragent");
+            $table->string("user_agent");
 
             $table->timestamp("created_at")->default(now()->carbonize());
         });
