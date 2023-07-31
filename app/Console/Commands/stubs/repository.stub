@@ -1,0 +1,21 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Repositories\Base\BaseRepository;
+
+class DummyClass extends BaseRepository
+{
+
+    /**
+     * Repositories default construct
+     * @param Model $model
+     */
+    public function __construct(Model $model)
+    {
+        // todo change the auto generated Model class
+        parent::__construct($model);
+    }
+
+}
