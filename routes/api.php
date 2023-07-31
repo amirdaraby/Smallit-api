@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ShortUrlController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,26 +23,26 @@ Route::group(["prefix" => "/v1"], function () {
     Route::get("/show/{url}", [ShortUrlController::class, "show"])->name("api.show");
 
 
-    /*
-     *
-     * # Url and Short url
-     *
-     * */
+    Route::middleware(["auth:sanctum"])->prefix("/user")->group(function () {
+        Route::get("/show", [UserController::class, "show"])->name("api.user_show");
+        Route::put("/update", [UserController::class, "update"])->name("api.user_update");
+        Route::delete("/logout", [AuthController::class, "logout"])->name("api.logout");
+        Route::delete("/delete", [UserController::class, "delete"])->name("api.user_delete");
+    });
 
     Route::group(["middleware" => "auth:sanctum"], function () {
-        Route::delete("/logout", [AuthController::class, "logout"])->name("api.logout");
 
         Route::group(["prefix" => "/url"], function () {
+
             Route::resource("/", ShortUrlController::class)->except(["show"]);
             Route::get("/{id}/stats", [ShortUrlController::class, "urlStats"])->name("api.url_stats");
             Route::post("/search", [ShortUrlController::class, "search"])->name("api.search");
             Route::get("/header", [ShortUrlController::class, "header"])->name("api.header");
             Route::post("/find", [ShortUrlController::class, "find"])->name("api.find");
+
         });
 
-        /*
-         * # Clicks
-         */
+
         Route::group(["prefix" => "/views"], function () {
 
             Route::get("/{url}", [\App\Http\Controllers\Api\ViewController::class, "index"])->name("api.view");
@@ -51,24 +52,8 @@ Route::group(["prefix" => "/v1"], function () {
             Route::get("/{url}/all", [\App\Http\Controllers\Api\ViewController::class, "getAll"])->name("api.view_all");
             Route::get("/{url}/all/{from}/{to}", [\App\Http\Controllers\Api\ViewController::class, "getByTime"]);
 
-
-            //            Route::get("/{url}/platforms/{}");
         });
 
-        /*
-         * # User
-         *
-         * */
-
-        Route::group(["prefix" => "/user"], function () {
-
-            Route::get("/clicks/count", [\App\Http\Controllers\Api\UserController::class, "userClicks"])->name("api.user_clicks");
-            Route::get("/url/all", [\App\Http\Controllers\Api\UserController::class, "userShortUrls"])->name("api.user_shorturls");
-            Route::resource('/requests', \App\Http\Controllers\Api\RequestsController::class)->parameter('requests', 'id')->except(['create', 'edit', 'update']);
-            Route::delete('/delete/requests', [\App\Http\Controllers\Api\RequestsController::class, 'destroyAll'])->name('api.destroy-requests');
-            Route::get('/home', [\App\Http\Controllers\Api\UserController::class, 'userHome'])->name('api.user-home');
-            Route::get("/guest", [\App\Http\Controllers\Api\UserController::class, "userNotHome"])->name("api.user-not-home");
-        });
 
     });
 

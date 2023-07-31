@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Http\Controllers\Api\BaseController;
+
 use App\Http\Requests\BaseRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LoginRequest extends BaseRequest
 {
@@ -29,7 +26,7 @@ class LoginRequest extends BaseRequest
     {
         return [
             "email"    => "required|string|email",
-            "password" => "required"
+            "password" => "required|string|min:5"
         ];
     }
 

@@ -63,4 +63,8 @@ class User extends Authenticatable
         return $this->hasMany(UserJobs::class, 'user_id');
     }
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
 }

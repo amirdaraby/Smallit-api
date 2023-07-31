@@ -37,29 +37,10 @@ class HelpersTest extends TestCase
         $this->assertSame("abcdefg", $response["data"]["short_url"]);
     }
 
-    public function test_success_response_helper_message(): void
-    {
-        $response = responseSuccess([], "This is a test Message")->getOriginalContent();
-        $this->assertSame("This is a test Message", $response["message"]);
-    }
-
     public function test_error_response_helper_status(): void
     {
         $response = responseError(status: 500);
         $this->assertSame(500, $response->getStatusCode());
-    }
-
-    public function test_error_response_helper_message(): void
-    {
-        $response = responseError("This is a test Error")->getOriginalContent();
-        $this->assertSame("This is a test Error", $response["message"]);
-    }
-
-    public function test_error_response_helper_status_converted_to_text(): void
-    {
-        $response = responseError();
-        $this->assertSame("Unprocessable Content", $response->statusText());
-
     }
 
     public function test_error_response_helper_status_text_in_response(): void

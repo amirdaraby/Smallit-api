@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 
 use App\Models\User;
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
@@ -20,7 +21,7 @@ class AuthTest extends TestCase
             "email" => "WrongEmail",
             "password" => null
         ]);
-        $response->assertStatus(400);
+        $response->assertStatus(422);
     }
 
     public function test_register_creates_user(): void
@@ -47,16 +48,23 @@ class AuthTest extends TestCase
         $this->assertArrayHasKey("token", $response["data"]);
     }
 
-    public function test_register_creates_and_returns_user_data(): void
+    public function test_register_creates_and_returns_valid_json_structure(): void
     {
         $response = $this->postJson(route("api.register"), [
             "name" => "test",
             "email" => "test@tester.com",
-            "password" => 123456789
-        ])->getOriginalContent();
+            "password" => UserFactory::PASSWORD
+        ]);
 
-        $this->assertArrayHasKey("email", $response["data"]);
-        $this->assertArrayHasKey("name", $response["data"]);
+        $response->assertJsonStructure([
+            "status",
+            "data" => [
+                "token",
+                "name",
+                "email"
+            ],
+            "message"
+        ]);
     }
 
     public function test_login_validation_returns_error_on_invalid_request_body(): void
@@ -65,7 +73,7 @@ class AuthTest extends TestCase
             "email" => "WrongEmail",
             "password" => null
         ]);
-        $response->assertStatus(400);
+        $response->assertStatus(422);
     }
 
     public function test_login_returns_error_response_when_user_not_found(): void
@@ -76,7 +84,7 @@ class AuthTest extends TestCase
         ];
         $response = $this->postJson(route("api.login"), $user);
 
-        $response->assertStatus(400);
+        $response->assertStatus(401);
     }
 
     public function test_login_returns_error_when_password_is_wrong(): void
@@ -85,14 +93,14 @@ class AuthTest extends TestCase
 
         $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => "123"]);
 
-        $response->assertStatus(400);
+        $response->assertStatus(422);
     }
 
     public function test_login_returns_success(): void
     {
         $user = User::factory()->create();
 
-        $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => "123456789"]);
+        $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => UserFactory::PASSWORD]);
 
         $response->assertStatus(202);
     }
@@ -101,7 +109,8 @@ class AuthTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => "123456789"])->getOriginalContent();
+
+        $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => UserFactory::PASSWORD])->getOriginalContent();
 
         $this->assertArrayHasKey("name", $response["data"]);
         $this->assertArrayHasKey("email", $response["data"]);
@@ -111,7 +120,7 @@ class AuthTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => "123456789"]);
+        $response = $this->postJson(route("api.login"), ["email" => $user->email, "password" => UserFactory::PASSWORD]);
 
         $this->assertNotNull(PersonalAccessToken::findToken($response["data"]["token"]));
         $this->assertArrayHasKey("token", $response["data"]);

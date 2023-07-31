@@ -3,10 +3,10 @@
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE');
 header('Access-Control-Allow-Headers: *');
 //header('Content-Type: application/json');
-define('LARAVEL_START', microtime(true));
+//define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------

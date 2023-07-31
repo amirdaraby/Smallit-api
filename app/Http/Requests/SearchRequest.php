@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\Api\BaseController;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class SearchRequest extends BaseRequest
 {
@@ -31,6 +29,6 @@ class SearchRequest extends BaseRequest
     }
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException((BaseController::error($validator->errors(), 422)));
+        return $this->failed($validator, 422);
     }
 }
