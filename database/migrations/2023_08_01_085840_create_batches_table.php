@@ -18,18 +18,17 @@ return new class extends Migration {
                 "queue",
                 "success",
                 "failed"
-            ]);
+            ])->default("queue");
 
-
-            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("user_id")->nullable(false);
             $table->foreign("user_id")->on("users")
                 ->references("id")->onDelete("cascade");
 
-
-            $table->unsignedBigInteger("url_id");
+            $table->unsignedBigInteger("url_id")->nullable(false);
             $table->foreign("url_id")->on("urls")
                 ->references("id")->onDelete("cascade");
 
+            $table->mediumInteger("amount")->nullable(false);
             $table->timestamps();
 
         });

@@ -19,7 +19,9 @@ return new class extends Migration {
             $table->foreign("user_id")->on("users")->references("id")
                 ->onDelete("cascade");
 
-            $table->timestamp("created_at")->autoIncrement();
+            $table->unique(["user_id", "url"]);
+
+            $table->timestamp("created_at")->useCurrent();
         });
     }
 

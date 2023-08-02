@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\ShortUrl;
 
+use App\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\Validator;
 
 
-class UrlRequest extends BaseRequest
+class ShortUrlRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +27,7 @@ class UrlRequest extends BaseRequest
     {
         return [
             "url" => ["required", "url", "regex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/"],
-            "count" => ["required", "int", "between:1,100000", "integer"]
+            "amount" => ["required", "int", "between:1,100000", "integer"]
         ];
     }
 
