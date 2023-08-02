@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -41,26 +43,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function shorturl()
+    public function shorturl() : HasMany
     {
         return $this->hasMany(ShortUrl::class, "user_id");
     }
 
-    public function clicks()
+    public function clicks() : HasManyThrough
     {
         return $this->hasManyThrough(Click::class, ShortUrl::class,
             "user_id", "shorturl_id",
             "id", "id");
     }
 
-    public function urls()
+    public function urls() : HasMany
     {
         return $this->hasMany(Url::class, "user_id");
-    }
-
-    public function jobs()
-    {
-        return $this->hasMany(UserJobs::class, 'user_id');
     }
 
     public function setPasswordAttribute($value)
