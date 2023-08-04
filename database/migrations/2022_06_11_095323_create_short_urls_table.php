@@ -25,9 +25,6 @@ return new class extends Migration {
             $table->foreign("url_id")->on("urls")->references("id")
                 ->onDelete("cascade");
 
-            $table->unsignedBigInteger("batch_id");
-            $table->foreign("batch_id")->on("short_urls")->references("id")
-                ->onDelete("cascade");
 
             $table->unique("short_url");
 

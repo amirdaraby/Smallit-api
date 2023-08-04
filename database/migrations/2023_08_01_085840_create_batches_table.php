@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('batches', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 255)->nullable(false);
+            $table->string("name", 255)->nullable(true);
 
             $table->enum("status", [
                 "queue",

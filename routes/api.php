@@ -32,7 +32,8 @@ Route::group(["prefix" => "/v1"], function () {
         });
 
         Route::group(["prefix" => "/shorturl"], function () {
-            Route::post("/", [ShortUrlController::class, "store"])->name("api.shorturl_create");
+            Route::post("/batch", [ShortUrlController::class, "store"])->name("api.shorturl_create");
+
         });
 
 

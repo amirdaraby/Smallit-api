@@ -13,8 +13,9 @@ class UrlRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function findOrNew($payload){
-
+    public function findOrNew($payload)
+    {
+        return $this->model->query()->where($payload)->firstOrCreate($payload);
     }
 
 }

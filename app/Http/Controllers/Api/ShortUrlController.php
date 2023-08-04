@@ -3,18 +3,27 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\SearchRequest;
-use App\Http\Requests\UrlRequest;
+use App\Http\Requests\ShortUrl\ShortUrlRequest;
 use App\Jobs\ShortUrlJob;
 use App\Jobs\StoreClickJob;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\UserJobs;
-use App\Traits\UserAgent;
+use App\Repositories\BatchRepository;
+use App\Repositories\UrlRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ShortUrlController extends BaseController
 {
+
+    protected UrlRepository $urlRepository;
+    protected BatchRepository $batchRepository;
+    public function __construct(UrlRepository $urlRepository, BatchRepository $batchRepository)
+    {
+        $this->urlRepository = $urlRepository;
+        $this->batchRepository = $batchRepository;
+    }
 
     public function index(Request $request): object
     {
@@ -35,30 +44,25 @@ class ShortUrlController extends BaseController
 
 
     /**
-     * @param UrlRequest $request
+     * @param ShortUrlRequest $request
      * @return string
      */
-    public function store(UrlRequest $request)
+    public function store(ShortUrlRequest $request)
     {
         $url = $request->url;
-        $url_id = $this->FindOrNewUrl($url);
-        $user_id = Auth::user()->id;
-        $count = $request->count;
+        $user_id = Auth::id();
+        $amount = $request->amount;
+        $name = $request->batch_name ?? null;
 
-        $job = UserJobs::create([
-            'user_id' => $user_id,
-            'url_id' => $url_id,
-            'count' => $count,
-            'status' => 'queue'
-        ]);
+        $url_id = $this->urlRepository->findOrNew(compact("url", "user_id"))->getAttribute("id");
+        $batch = $this->batchRepository->create(compact("url_id", "user_id", "amount", "name"));
 
-
-        $job = ShortUrlJob::dispatch($url_id, $count, $user_id, $job);
-
-        if ($job)
-            return $this->success($job, "your request to create : $request->count short urls for url : $request->url submitted", 201);
-        else
-            return $this->error("failed", 500);
+        if ($batch){
+            $job = ShortUrlJob::dispatch($url_id, $amount, $user_id, $batch);
+            if ($job)
+                return responseSuccess(null, "your request to create $amount short urls for $url successfully Added to queue",202);
+        }
+        return responseError("there is a problem in serve.", 500);
     }
 
     /**
