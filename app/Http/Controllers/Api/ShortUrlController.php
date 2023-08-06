@@ -8,7 +8,6 @@ use App\Jobs\ShortUrlJob;
 use App\Jobs\StoreClickJob;
 use App\Models\ShortUrl;
 use App\Models\Url;
-use App\Models\UserJobs;
 use App\Repositories\BatchRepository;
 use App\Repositories\UrlRepository;
 use Illuminate\Http\Request;
@@ -43,10 +42,6 @@ class ShortUrlController extends BaseController
     }
 
 
-    /**
-     * @param ShortUrlRequest $request
-     * @return string
-     */
     public function store(ShortUrlRequest $request)
     {
         $url = $request->url;
@@ -62,13 +57,10 @@ class ShortUrlController extends BaseController
             if ($job)
                 return responseSuccess(null, "your request to create $amount short urls for $url successfully Added to queue",202);
         }
-        return responseError("there is a problem in serve.", 500);
+        return responseError("there is a problem in server", 500);
     }
 
-    /**
-     * @param ShortUrl $url
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function show(ShortUrl $url, Request $request): object
     {
 
@@ -109,13 +101,6 @@ class ShortUrlController extends BaseController
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         //

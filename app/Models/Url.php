@@ -30,9 +30,9 @@ class Url extends Model
         return $this->belongsTo(User::class, "user_id");
     }
 
-    public function batch(): HasMany
+    public function batches(): HasMany
     {
-        return $this->hasMany(Batch::class, "batch_id");
+        return $this->hasMany(Batch::class, "url_id");
     }
 
 }

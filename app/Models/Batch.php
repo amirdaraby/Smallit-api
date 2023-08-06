@@ -20,6 +20,6 @@ class Batch extends Model
     }
 
     public function url(): BelongsTo{
-        return $this->belongsTo(Url::class, "batch_id");
+        return $this->belongsTo(Url::class, "url_id");
     }
 }
