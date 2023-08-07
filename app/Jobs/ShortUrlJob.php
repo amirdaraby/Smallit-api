@@ -36,7 +36,7 @@ class ShortUrlJob implements ShouldQueue
             $insertData [$i] = [
                 'user_id'   => $this->user,
                 'url_id'    => $this->url,
-                'batch_id' => $this->batch->id ,
+                'batch_id' => $this->batch->id,
                 'short_url' => generateShortUrl(++$maxId)
             ];
         }
@@ -44,7 +44,7 @@ class ShortUrlJob implements ShouldQueue
         $chunks = array_chunk($insertData, 10000);
 
         foreach ($chunks as $chunk) {
-            ShortUrl::insert($chunk);
+            ShortUrl::query()->insert($chunk);
         }
 
         $this->batch->update([
@@ -53,7 +53,7 @@ class ShortUrlJob implements ShouldQueue
 
     }
 
-    public function fail($exception = null)
+    public function failed($exception = null)
     {
         $this->batch->update([
            'status' => 'failed'

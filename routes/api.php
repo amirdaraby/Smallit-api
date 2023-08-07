@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\BatchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,12 +30,19 @@ Route::group(["prefix" => "/v1"], function () {
             Route::put("/update", [UserController::class, "update"])->name("api.user_update");
             Route::delete("/logout", [AuthController::class, "logout"])->name("api.logout");
             Route::delete("/delete", [UserController::class, "delete"])->name("api.user_delete");
+
+            Route::group(["prefix" => "/batches"], function (){
+                Route::get("/all", [BatchController::class, "all"])->name("api.user_all_batches");
+                Route::get("/{id}", [BatchController::class, "show"])->name("api.user_show_batch");
+                Route::delete("/{id}", [BatchController::class,"delete"])->name("api.user_delete_batch");
+            });
+
         });
 
         Route::group(["prefix" => "/shorturl"], function () {
             Route::post("/batch", [ShortUrlController::class, "store"])->name("api.shorturl_create");
-
         });
+
 
 
         Route::group(["prefix" => "/url"], function () {

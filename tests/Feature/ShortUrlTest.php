@@ -77,8 +77,9 @@ class ShortUrlTest extends TestCase
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->create();
         $amount = 100000;
-        Queue::fake();
-        ShortUrlJob::dispatch($url->url ,$amount, $user->id, $batch);
 
+        ShortUrlJob::dispatch($url->id ,$amount, $user->id, $batch);
+
+        $this->assertDatabaseCount(ShortUrl::class, 100000);
     }
 }
