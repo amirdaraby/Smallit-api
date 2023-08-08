@@ -27,9 +27,7 @@ class ShortUrlJob implements ShouldQueue
     public function handle()
     {
 
-        $maxId = ShortUrl::query()->max("id");
-        if ($maxId == null)
-            $maxId = 99999;
+        $maxId = ShortUrl::query()->max("id") ?? 99999;
 
 
         for ($i = 0; $i < $this->amount; $i++) {

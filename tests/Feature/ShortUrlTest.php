@@ -7,12 +7,8 @@ use App\Models\Batch;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Models\User;
-use App\Repositories\BatchRepository;
-use App\Repositories\UrlRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Queue\Console\WorkCommand;
 use Illuminate\Support\Facades\Queue;
-use Mockery\MockInterface;
 use Tests\TestCase;
 
 class ShortUrlTest extends TestCase
@@ -82,4 +78,6 @@ class ShortUrlTest extends TestCase
 
         $this->assertDatabaseCount(ShortUrl::class, 100000);
     }
+
+
 }

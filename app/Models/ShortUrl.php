@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
 
 class ShortUrl extends Model
 {
@@ -39,5 +38,8 @@ class ShortUrl extends Model
         return $this->hasMany(Click::class, "shorturl_id");
     }
 
+    public function batch(): BelongsTo {
+        return $this->belongsTo(Batch::class, "batch_id");
+    }
 
 }

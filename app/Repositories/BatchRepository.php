@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Batch;
 use App\Repositories\Base\BaseRepository;
+use Illuminate\Database\Eloquent\Model;
 
 class BatchRepository extends BaseRepository
 {
@@ -13,4 +14,8 @@ class BatchRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function findByUserId(int $userId)
+    {
+        return $this->model->query()->where("user_id" , "=", $userId)->paginate(10);
+    }
 }
