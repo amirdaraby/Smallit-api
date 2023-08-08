@@ -4,11 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -20,19 +19,21 @@ return new class extends Migration {
             $table->unsignedBigInteger("user_id");
             $table->foreign("user_id")->on("users")->references("id")
                 ->onDelete("cascade");
+
             $table->unsignedBigInteger("url_id");
             $table->foreign("url_id")->on("urls")->references("id")
                 ->onDelete("cascade");
 
-            $table->unique("short_url");
+            $table->unsignedBigInteger("batch_id");
+            $table->foreign("batch_id")->on("batches")->references("id")
+                ->onDelete("cascade");
 
+            $table->unique("short_url");
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

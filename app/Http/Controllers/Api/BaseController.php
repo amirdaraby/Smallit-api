@@ -20,12 +20,6 @@ class BaseController extends Controller
         return response()->json(["status" => "error", "message" => $message, "data" => $data], $code);
     }
 
-    /*
-     *
-     * Find Or New Domain
-     * returns Domain ID
-     *
-     */
 
     public function FindOrNewUrl($url)
     {
@@ -35,29 +29,12 @@ class BaseController extends Controller
             $LongUrl = Url::create([
                 "url"     => $url,
                 "user_id" => Auth::id(),
-                "created_at" => now()
+                "created_at" => now()->carbonize()
             ]);
             // todo add this to repository
             return $LongUrl->id;
         } else return $LongUrl->id;
 
     }
-
-
-    public static function regexUrl($url): bool
-    {
-
-        if (preg_match("/\/+$/m", $url))
-            return 0;
-        return 1;
-
-    }
-
-    public static function generateUrl(int $id,int $length = 6)
-    {
-        // todo short url controller
-        return base_convert($id , 10, 36);
-    }
-
 
 }
