@@ -38,8 +38,11 @@ class BatchController extends BaseController
         if (Gate::denies("batch-owner", $batch))
             return responseError("batch not found", 404);
 
+        if ($batch->status != "success")
+            return responseError("cannot delete a unsuccessful batch", 400);
+
         return $this->batchRepository->delete($id) ? responseSuccess(true, "batch deleted successfully", 200)
-            : responseError(false, "batch delete failed", 500);
+            : responseError("batch delete failed", 500, false);
 
     }
 }

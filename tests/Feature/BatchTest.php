@@ -144,7 +144,7 @@ class BatchTest extends TestCase
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->create();
-
+        ShortUrlJob::dispatch($url->id, 1, $user->id, $batch);
         $response = $this->actingAs($user)->deleteJson(route("api.user_delete_batch", ["id" => $batch->id]));
 
         $response->assertStatus(200);
@@ -156,6 +156,8 @@ class BatchTest extends TestCase
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->create();
         $this->assertDatabaseCount(Batch::class, 1);
+
+        ShortUrlJob::dispatch($url->id, 1, $user->id, $batch);
 
         $this->actingAs($user)->deleteJson(route("api.user_delete_batch", ["id" => $batch->id]));
 
@@ -184,5 +186,15 @@ class BatchTest extends TestCase
         $this->assertDatabaseCount(ShortUrl::class, 0);
     }
 
+    public function test_batch_delete_returns_bad_request_when_batch_is_not_success(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->create();
+
+        $response = $this->actingAs($user)->deleteJson(route("api.user_delete_batch", ["id" => $batch->id]));
+
+        $response->assertStatus(400);
+    }
 
 }
