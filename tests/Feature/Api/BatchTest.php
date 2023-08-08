@@ -145,6 +145,7 @@ class BatchTest extends TestCase
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->create();
         ShortUrlJob::dispatch($url->id, 1, $user->id, $batch);
+
         $response = $this->actingAs($user)->deleteJson(route("api.batch_delete", ["id" => $batch->id]));
 
         $response->assertStatus(200);
