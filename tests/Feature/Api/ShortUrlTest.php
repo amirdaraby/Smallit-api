@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Feature\Api;
 
 use App\Jobs\ShortUrlJob;
 use App\Models\Batch;
@@ -18,7 +18,7 @@ class ShortUrlTest extends TestCase
     public function test_short_urls_create_returns_auth_error()
     {
         User::factory()->count(10);
-        $response = $this->postJson(route("api.shorturl_create"));
+        $response = $this->postJson(route("api.short_url_create"));
 
         $response->assertStatus(401);
     }
@@ -26,7 +26,7 @@ class ShortUrlTest extends TestCase
     public function test_short_urls_create_returns_validation_error()
     {
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->postJson(route("api.shorturl_create"));
+        $response = $this->actingAs($user)->postJson(route("api.short_url_create"));
 
         $response->assertStatus(422);
     }
@@ -37,7 +37,7 @@ class ShortUrlTest extends TestCase
 
         Queue::fake();
 
-        $response = $this->actingAs($user)->postJson(route("api.shorturl_create"), [
+        $response = $this->actingAs($user)->postJson(route("api.short_url_create"), [
             "url" => "https://rockstargames.com",
             "amount" => 100000,
             "batch_name" => "mamad_batch"
@@ -54,7 +54,7 @@ class ShortUrlTest extends TestCase
 
         Queue::fake();
 
-        $this->actingAs($user)->postJson(route("api.shorturl_create"), [
+        $this->actingAs($user)->postJson(route("api.short_url_create"), [
             "url" => "https://rockstargames.com",
             "amount" => 100000,
             "batch_name" => "mamad_batch"

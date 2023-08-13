@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BatchController;
+use App\Http\Controllers\Api\UrlController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,23 +27,32 @@ Route::group(["prefix" => "/v1"], function () {
     Route::middleware(["auth:sanctum"])->group(function () {
 
         Route::group(["prefix" => "/user"], function () {
+
             Route::get("/show", [UserController::class, "show"])->name("api.user_show");
             Route::put("/update", [UserController::class, "update"])->name("api.user_update");
             Route::delete("/logout", [AuthController::class, "logout"])->name("api.logout");
             Route::delete("/delete", [UserController::class, "delete"])->name("api.user_delete");
 
-            Route::group(["prefix" => "/batches"], function (){
-                Route::get("/all", [BatchController::class, "all"])->name("api.user_all_batches");
-                Route::get("/{id}", [BatchController::class, "show"])->name("api.user_show_batch");
-                Route::delete("/{id}", [BatchController::class,"delete"])->name("api.user_delete_batch");
+            Route::group(["prefix" => "/batches"], function () {
+                Route::get("/all", [BatchController::class, "all"])->name("api.batches_all");
+                Route::get("/{id}", [BatchController::class, "show"])->name("api.batch_show");
+                Route::delete("/{id}", [BatchController::class, "delete"])->name("api.batch_delete");
             });
 
+            Route::group(["prefix" => "/urls"], function () {
+                Route::get("/all", [UrlController::class, "all"])->name("api.urls_all");
+                Route::get("/{id}", [UrlController::class, "show"])->name("api.url_show");
+                Route::delete("/{id}", [UrlController::class, "delete"])->name("api.user_url_delete");
+            });
+
+            Route::group(["prefix" => "/short-urls"], function () {
+                Route::post("/batch", [ShortUrlController::class, "store"])->name("api.short_url_create");
+            });
         });
 
         Route::group(["prefix" => "/shorturl"], function () {
-            Route::post("/batch", [ShortUrlController::class, "store"])->name("api.shorturl_create");
-        });
 
+        });
 
 
         Route::group(["prefix" => "/url"], function () {
