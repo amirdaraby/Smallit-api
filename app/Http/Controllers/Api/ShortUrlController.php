@@ -12,33 +12,18 @@ use App\Repositories\BatchRepository;
 use App\Repositories\UrlRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ShortUrlController extends BaseController
 {
 
     protected UrlRepository $urlRepository;
     protected BatchRepository $batchRepository;
+
     public function __construct(UrlRepository $urlRepository, BatchRepository $batchRepository)
     {
         $this->urlRepository = $urlRepository;
         $this->batchRepository = $batchRepository;
-    }
-
-    public function index(Request $request): object
-    {
-        $user = Auth::user();
-
-        $url = ShortUrl::with(["url" => function ($q) use ($user) {
-            $q->select("id", "url")->withCount(["shorturl" => function ($q) use ($user) {
-                $q->where("user_id", $user->id);
-            }]);
-        }])->select("url_id")
-            ->where("user_id", $user->id)->groupBy('url_id')
-            ->paginate(10);
-        if ($url->isEmpty())
-            return $this->error("this user does not have short urls", 404, null);
-        return $this->success(["user" => $user, "url" => $url], "user's shorturl data");
-
     }
 
 
@@ -50,12 +35,14 @@ class ShortUrlController extends BaseController
         $name = $request->batch_name ?? null;
 
         $url_id = $this->urlRepository->findOrNew(compact("url", "user_id"))->getAttribute("id");
+
+        Cache::tags("user_{$user_id}_urls")->flush();
+
         $batch = $this->batchRepository->create(compact("url_id", "user_id", "amount", "name"));
 
-        if ($batch){
-            $job = ShortUrlJob::dispatch($url_id, $amount, $user_id, $batch);
-            if ($job)
-                return responseSuccess(null, "your request to create $amount short urls for $url successfully Added to queue",202);
+        if ($batch) {
+            ShortUrlJob::dispatch($url_id, $amount, $user_id, $batch);
+            return responseSuccess(null, "your request to create $amount short urls for $url successfully Added to queue", 202);
         }
         return responseError("there is a problem in server", 500);
     }

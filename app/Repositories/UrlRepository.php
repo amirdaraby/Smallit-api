@@ -2,10 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Repositories\Base\BaseRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class UrlRepository extends BaseRepository
@@ -27,6 +25,6 @@ class UrlRepository extends BaseRepository
             ->where("user_id", "=", $id)
             ->groupBy(["id", "url"])
             ->orderBy("short_url_amount", "desc")
-            ->paginate();
+            ->paginate(10);
     }
 }
