@@ -11,7 +11,7 @@ my target is having an easy to use url shortener with most features.
 
 ## How to use ?
 
-clone project and run `make` command in root directory
+just run `make` command in root directory
 
 ---
 
