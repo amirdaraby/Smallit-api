@@ -9,20 +9,9 @@ my target is having an easy to use url shortener with most features.
 
 ---
 
-## Requirements
-
-* PHP
-* MySQL
-* Composer (to install laravel and dependencies)
-
----
-
 ## How to use ?
 
-* install requirments
-* run `php artisan migrate`
-* run `php artisan queue:work`
-* run `php artisan route:list` to see api addresses
+clone project an run `make` command in root directory
 
 ---
 
@@ -32,14 +21,14 @@ check `apps/Http/Controllers/Api/UrlShortenerController`, `show` method
 
 #### when you are using api to get **Long Url** :
 
-your Http Request must have a header with Key: **uid** with Value of a **fingerprint** unique id
+your Http Request can have a header with Key: **uid** with Value of a unique id.
 
 I suggest [fingerprint js]
 to generate **uid**
 
 [fingerprint js]:https://github.com/fingerprintjs/fingerprintjs
 
-this is how I make the request to redirect user to Long url with counting clicks
+this is how I make the request to redirect user to Long url with counting clicks (in client side)
 
      <script>
         let queryString = '{{$url}}' // $url is short url (querystring)
