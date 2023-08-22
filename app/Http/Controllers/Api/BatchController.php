@@ -26,8 +26,8 @@ class BatchController extends BaseController
     public function show(int $id): object
     {
         $batch = $this->batchRepository->findById($id);
-        if (Gate::denies("batch-owner", $batch))
-            return responseError("batch not found", 404);
+
+        Gate::authorize("batch-owner", $batch);
 
         return responseSuccess($batch->toArray(), "batch's data", 200);
     }
@@ -35,8 +35,8 @@ class BatchController extends BaseController
     public function delete(int $id)
     {
         $batch = $this->batchRepository->findById($id);
-        if (Gate::denies("batch-owner", $batch))
-            return responseError("batch not found", 404);
+
+        Gate::authorize("batch-owner", $batch);
 
         if ($batch->status != "success")
             return responseError("cannot delete a unsuccessful batch", 400);

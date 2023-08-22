@@ -37,8 +37,7 @@ class UrlController extends BaseController
     {
         $url = $this->urlRepository->findById($id);
 
-        if (Gate::denies("url-owner", $url))
-            return responseError("url not found", 404);
+        Gate::authorize("url-owner", $url);
 
         return responseSuccess($url->toArray(), "url found successfully", 200);
     }
@@ -47,8 +46,7 @@ class UrlController extends BaseController
     {
         $url = $this->urlRepository->findById($id);
 
-        if (Gate::denies("url-owner", $url))
-            return responseError("url not found", 404);
+        Gate::authorize("url-owner", $url);
 
         $deleted = $this->urlRepository->delete($url->id);
 
