@@ -15,46 +15,46 @@ class UrlTest extends TestCase
 
     use RefreshDatabase;
 
-    public function test_all_urls_return_authentication_error(): void
+    public function testAllUrlsReturnsAuthenticationError(): void
     {
         $response = $this->getJson(route("api.urls_all"));
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
-    public function test_all_urls_return_no_content_when_user_has_no_urls(): void
+    public function testAllUrlsReturnsNoContentErrorWhenUserHasNoUrls(): void
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->getJson(route("api.urls_all"));
-        $response->assertStatus(204);
+        $response->assertNotFound();
     }
 
-    public function test_all_urls_return_successful_response(): void
+    public function testAllUrlsReturnsSuccessfulResponse(): void
     {
         $user = User::factory()->create();
         Url::factory()->for($user)->create();
 
         $response = $this->actingAs($user)->getJson(route("api.urls_all"));
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
-    public function test_url_show_returns_unauthenticated_error()
+    public function testUrlShowReturnsAuthenticationError(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
 
         $response = $this->getJson(route("api.url_show", ["id" => $url->id]));
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
-    public function test_user_url_show_returns_not_found()
+    public function testUrlShowReturnsNotFoundError(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->getJson(route("api.url_show", ["id" => 1]));
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_url_show_returns_unauthorized_error_as_not_found()
+    public function testUrlShowReturnsAuthorizationErrorAsNotFound(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -62,44 +62,49 @@ class UrlTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.url_show", ["id" => $url->id]));
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_url_show_returns_success_response()
+    public function testUrlShowReturnsSuccessfulResponse(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
 
         $response = $this->actingAs($user)->getJson(route("api.url_show", ["id" => $url->id]));
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
-    public function test_url_delete_returns_unauthenticated_error(){
+    public function testUrlDeleteReturnsAuthenticationError(): void
+    {
         $user = User::factory()->create();
         Url::factory()->for($user)->create();
 
         $response = $this->deleteJson(route("api.url_delete", ["id" => 1]));
 
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
 
     }
-    public function test_url_delete_returns_not_found_error(){
+
+    public function testUrlDeleteReturnsNotFoundError(): void
+    {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->deleteJson(route("api.url_delete", ["id" => 1]));
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_url_delete_returns_unauthorized_error_as_not_found(){
+    public function testUrlDeleteReturnsAuthorizationErrorAsNotFound(): void
+    {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
 
         $user2 = User::factory()->create();
         $response = $this->actingAs($user2)->deleteJson(route("api.url_delete", ["id" => $url->id]));
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_url_delete_deletes_url_successfully(){
+    public function testUrlDeleteCanDeleteUrl(): void
+    {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
 
@@ -110,7 +115,18 @@ class UrlTest extends TestCase
         $this->assertDatabaseCount(Url::class, 0);
     }
 
-    public function test_url_delete_deletes_batches_on_cascade(){
+    public function testUrlDeleteReturnsSuccessfulResponse(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->deleteJson(route("api.url_delete", ["id" => $url->id]));
+
+        $response->assertOk();
+    }
+
+    public function testUrlDeleteDeletesBatchesOnCascade(): void
+    {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
@@ -124,7 +140,8 @@ class UrlTest extends TestCase
         $this->assertDatabaseCount(Batch::class, 0);
     }
 
-    public function test_url_delete_deletes_short_urls_on_cascade(){
+    public function testUrlDeleteDeletesShortUrlsOnCascade(): void
+    {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
@@ -137,12 +154,83 @@ class UrlTest extends TestCase
         $this->assertDatabaseCount(ShortUrl::class, 0);
     }
 
-    public function test_url_delete_returns_response_success(){
+    public function testUrlDeleteReturnsSuccessResponse(): void
+    {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
 
         $response = $this->actingAs($user)->deleteJson(route("api.url_delete", ["id" => $url->id]));
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
+
+    public function testUrlShowShortUrlsReturnsNotFoundError() : void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_short_urls", ["id" => 1]));
+
+        $response->assertNotFound();
+    }
+
+    public function testUrlShowShortUrlsReturnsAuthenticationError() : void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->getJson(route("api.url_short_urls", ["id" => $url->id]));
+
+        $response->assertUnauthorized();
+    }
+
+    public function testUrlShowShortUrlsReturnsAuthorizationErrorAsNotFound(): void
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user2)->getJson(route("api.url_short_urls", ["id" => $url->id]));
+
+        $response->assertNotFound();
+    }
+
+
+    public function testUrlShowShortUrlsReturnsNotFoundErrorWhenUrlHasNoShortUrls(): void{
+
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_short_urls", ["id" => $url->id]));
+
+        $response->assertNotFound();
+    }
+
+    public function testUrlShowShortUrlsReturnsSuccessResponse() : void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 2)->create();
+        ShortUrlJob::dispatch($url->id, 2, $user->id, $batch);
+
+        $response = $this->actingAs($user)->getJson(route("api.url_short_urls", ["id" => $url->id]));
+
+        $response->assertOk();
+    }
+
+    public function testUrlShowShortUrlsReturnsValidJsonStructureOnSuccessResponse() : void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_short_urls", ["id" => $url->id]));
+
+        $response->assertJsonStructure([
+            "status",
+            "data" => [
+                "data" => [],
+            ],
+            "message"
+        ]);
+    }
+
 }

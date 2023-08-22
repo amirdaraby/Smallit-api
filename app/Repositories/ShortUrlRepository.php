@@ -13,4 +13,8 @@ class ShortUrlRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function findByUrlId(int $id){
+        return $this->model->query()->select("*")->where("url_id", "=", $id)->paginate(15);
+    }
+
 }

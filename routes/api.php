@@ -43,6 +43,7 @@ Route::group(["prefix" => "/v1"], function () {
                 Route::get("/all", [UrlController::class, "all"])->name("api.urls_all");
                 Route::get("/{id}", [UrlController::class, "show"])->name("api.url_show");
                 Route::delete("/{id}", [UrlController::class, "delete"])->name("api.url_delete");
+                Route::get("/{id}/short-urls", [UrlController::class, "showShortUrls"])->name("api.url_short_urls");
             });
 
             Route::group(["prefix" => "/short-urls"], function () {
