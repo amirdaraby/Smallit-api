@@ -22,7 +22,7 @@ The default `www_user` is set as `1000(www-data)` in `.env.example`. feel free t
 
 - ### USER and Group
   (If you have problems with user and permissions, read this section)
-  #### Note: www-data user and group are typically created and managed automatically when you install web server software like Apache or Nginx. Manually creating them is generally not required unless you have specific reasons to do so.
+  #### Note: www-data user and group are typically created and managed automatically when you install web server software like Apache or Nginx. Manually creating them is generally not required.
 
 1. `sudo groupadd www-data` (Creates the www-data group)
 2. `sudo useradd -g www-data -s /usr/sbin/nologin -M www-data` (Creates www-data user and add it to www-data group)
