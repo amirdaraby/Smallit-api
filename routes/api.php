@@ -37,6 +37,7 @@ Route::group(["prefix" => "/v1"], function () {
                 Route::get("/all", [BatchController::class, "all"])->name("api.batches_all");
                 Route::get("/{id}", [BatchController::class, "show"])->name("api.batch_show");
                 Route::delete("/{id}", [BatchController::class, "delete"])->name("api.batch_delete");
+                Route::get("/{id}/short-urls",[BatchController::class, "showShortUrls"])->name("api.batch_short_urls");
             });
 
             Route::group(["prefix" => "/urls"], function () {
@@ -50,11 +51,6 @@ Route::group(["prefix" => "/v1"], function () {
                 Route::post("/batch", [ShortUrlController::class, "store"])->name("api.short_url_create");
             });
         });
-
-        Route::group(["prefix" => "/shorturl"], function () {
-
-        });
-
 
         Route::group(["prefix" => "/url"], function () {
 
