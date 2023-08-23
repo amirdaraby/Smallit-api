@@ -15,8 +15,8 @@ return new class extends Migration
                 $table->id();
                 $table->string("uid")->nullable(true);
 
-                $table->unsignedBigInteger("shorturl_id");
-                $table->foreign("shorturl_id")->on("short_urls")
+                $table->unsignedBigInteger("short_url_id");
+                $table->foreign("short_url_id")->on("short_urls")
                     ->references("id")
                     ->onDelete("cascade");
 
@@ -31,7 +31,7 @@ return new class extends Migration
                     "BlackBerry",
                     "Windows Phone",
                     "Mobile",
-                    "Unknown"])->nullable(false);
+                    ])->nullable(false);
 
                 $table->enum("browser", ["Samsung Browser",
                     "Edge",
@@ -42,7 +42,7 @@ return new class extends Migration
                     "Nokia Browser",
                     "Safari",
                     "Internet Explorer",
-                    "Unknown"])->nullable(false);
+                    ])->nullable(true);
 
 
                 $table->string("user_agent");

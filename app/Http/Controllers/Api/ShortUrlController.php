@@ -27,7 +27,7 @@ class ShortUrlController extends BaseController
     }
 
 
-    public function store(ShortUrlRequest $request)
+    public function store(ShortUrlRequest $request): object
     {
         $url = $request->url;
         $user_id = Auth::id();

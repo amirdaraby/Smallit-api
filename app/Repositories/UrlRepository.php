@@ -22,15 +22,11 @@ class UrlRepository extends BaseRepository
 
     public function findByUserIdWithShortUrlAmount(int $id) : LengthAwarePaginator
     {
-        return $this->model->query()->select(["id", "url", DB::raw("(select count(*) from short_urls where url_id = urls.id) as short_url_amount "), "created_at"])
+        return $this->model->query()->select(["id", "url", DB::raw("(select count(*) from short_urls where url_id = urls.id) as short_url_amount"), "created_at"])
             ->where("user_id", "=", $id)
             ->groupBy(["id", "url"])
             ->orderBy("short_url_amount", "desc")
             ->paginate(10);
     }
 
-    public function findByIdWithShortUrlAmount(int $id)
-    {
-
-    }
 }

@@ -14,21 +14,21 @@ class BatchTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_all_batches_return_unauthenticated_error(): void
+    public function testAllBatchesReturnUnauthenticatedError(): void
     {
         $response = $this->getJson(route("api.batches_all"));
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
-    public function test_all_batches_return_not_found(): void
+    public function testAllBatchesReturnNotFound(): void
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->getJson(route("api.batches_all"));
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_all_batches_return_ok_status_on_successful(): void
+    public function testAllBatchesReturnSuccessResponse(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -36,11 +36,11 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user)->getJson(route("api.batches_all"));
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
 
-    public function test_all_batches_return_data_on_successful(): void
+    public function testALlBatchesReturnDataOnSuccessResponse(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -51,13 +51,13 @@ class BatchTest extends TestCase
         $this->assertCount(10, $response["data"]["data"]);
     }
 
-    public function test_batch_show_returns_unauthenticated_error(): void
+    public function testBatchShowReturnsUnauthenticatedError(): void
     {
         $response = $this->getJson(route("api.batch_show", ["id" => 100]));
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
-    public function test_batch_show_returns_unauthorized_as_not_found_error(): void
+    public function testBatchShowReturnsUnauthorizedErrorAsNotFound(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -67,10 +67,10 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.batch_show", ["id" => 5]));
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_batch_show_returns_not_found(): void
+    public function testBatchShowReturnsNotFound(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -79,10 +79,10 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user)->getJson(route("api.batch_show", ["id" => 11]));
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_batch_show_returns_ok_status(): void
+    public function testBatchShowReturnsSuccessResponse(): void
     {
 
         $user = User::factory()->create();
@@ -91,10 +91,10 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user)->getJson(route("api.batch_show", ["id" => 10]));
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
-    public function test_batch_show_returns_valid_json_structure(): void
+    public function testBatchShowReturnsValidJsonStructure(): void
     {
 
         $user = User::factory()->create();
@@ -119,13 +119,13 @@ class BatchTest extends TestCase
         ]);
     }
 
-    public function test_batch_delete_returns_unauthenticated_error(): void
+    public function testBatchDeleteReturnsUnauthenticatedError(): void
     {
         $response = $this->deleteJson(route("api.batch_delete", ["id" => 5]));
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
 
-    public function test_batch_delete_returns_unauthorized_as_not_found_error(): void
+    public function testBatchDeleteReturnsUnauthorizedErrorAsNotFound(): void
     {
 
         $user = User::factory()->create();
@@ -136,10 +136,10 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user2)->deleteJson(route("api.batch_delete", ["id" => 5]));
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_batch_delete_returns_successful_response(): void
+    public function testBatchDeleteReturnsSuccessResponse(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -148,10 +148,10 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user)->deleteJson(route("api.batch_delete", ["id" => $batch->id]));
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
-    public function test_batch_delete_can_delete_batch_from_database(): void
+    public function testBatchDeleteCanDeleteBatchFromDatabase(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -165,16 +165,16 @@ class BatchTest extends TestCase
         $this->assertDatabaseCount(Batch::class, 0);
     }
 
-    public function test_batch_delete_returns_not_found(): void
+    public function testBatchDeleteReturnsNotFound(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->deleteJson(route("api.batch_delete", ["id" => 50]));
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_batch_delete_can_delete_short_urls_on_cascade(): void
+    public function testBatchDeleteCanDeleteShortUrlsOnCascade(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -187,7 +187,7 @@ class BatchTest extends TestCase
         $this->assertDatabaseCount(ShortUrl::class, 0);
     }
 
-    public function test_batch_delete_returns_bad_request_when_batch_is_not_success(): void
+    public function testBatchDeleteReturnsBadRequestWhenBatchIsNotSuccess(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -195,7 +195,83 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user)->deleteJson(route("api.batch_delete", ["id" => $batch->id]));
 
-        $response->assertStatus(400);
+        $response->assertBadRequest();
+    }
+
+    public function testBatchShowShortUrlsReturnAuthenticationError(){
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->create();
+
+        $response = $this->getJson(route("api.batch_short_urls", ["id" => $batch->id]));
+
+        $response->assertUnauthorized();
+    }
+
+    public function testBatchShowShortUrlsReturnNotFound(){
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.batch_short_urls", ["id" => 1]));
+
+        $response->assertNotFound();
+    }
+
+    public function testBatchShowShortUrlsReturnUnauthorizedErrorAsNotFound(){
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->create();
+        $user2 = User::factory()->create();
+
+        $response = $this->actingAs($user2)->getJson(route("api.batch_short_urls", ["id" => $batch->id]));
+
+        $response->assertNotFound();
+    }
+
+    public function testBatchShowShortUrlsReturnConflictErrorWhenBatchIsNotComplete(){
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        Batch::factory()->for($user)->for($url)->set("status", "queue")->create();
+        $response = $this->actingAs($user)->getJson(route("api.batch_short_urls", ["id" => 1]));
+
+        $response->assertConflict();
+    }
+
+    public function testBatchShowShortUrlsReturnSuccessResponse(){
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
+        ShortUrlJob::dispatch($url->id, 10, $user->id, $batch);
+
+
+        $response = $this->actingAs($user)->getJson(route("api.batch_short_urls", ["id" => $batch->id]));
+        $response->assertOk();
+    }
+
+    public function testBatchShowShortUrlsReturnPaginatedSuccessResponse(){
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
+        ShortUrlJob::dispatch($url->id, 10, $user->id, $batch);
+
+
+        $response = $this->actingAs($user)->getJson(route("api.batch_short_urls", ["id" => $batch->id]));
+        $response->assertOk()->assertJsonStructure([
+            "data" => [
+                'current_page',
+                'data' => [],
+                'first_page_url',
+                'from',
+                'last_page',
+                'last_page_url',
+                'links' => [],
+                'next_page_url',
+                'path',
+                'per_page',
+                'prev_page_url',
+                'to',
+                'total',
+            ],
+        ]);
     }
 
 }
