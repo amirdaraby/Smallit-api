@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BatchController;
 use App\Http\Controllers\Api\UrlController;
+use App\Http\Controllers\Api\ClickController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +23,7 @@ Route::group(["prefix" => "/v1"], function () {
 
     Route::post("/login", [AuthController::class, "login"])->name("api.login");
     Route::post("/register", [AuthController::class, "register"])->name("api.register");
-    Route::get("/show/{url}", [ShortUrlController::class, "show"])->name("api.show");
+    Route::get("/click/{short_url}", [ClickController::class, "click"])->name("api.click");
 
     Route::middleware(["auth:sanctum"])->group(function () {
 
@@ -42,12 +43,15 @@ Route::group(["prefix" => "/v1"], function () {
 
             Route::group(["prefix" => "/urls"], function () {
                 Route::get("/all", [UrlController::class, "all"])->name("api.urls_all");
+                Route::get("/search", [UrlController::class,"search"])->name("api.url_search");
                 Route::get("/{id}", [UrlController::class, "show"])->name("api.url_show");
                 Route::delete("/{id}", [UrlController::class, "delete"])->name("api.url_delete");
                 Route::get("/{id}/short-urls", [UrlController::class, "showShortUrls"])->name("api.url_short_urls");
             });
 
             Route::group(["prefix" => "/short-urls"], function () {
+                Route::get("/all",[ShortUrlController::class, "all"])->name("api.short_urls_all");
+                Route::get("/{id}",[ShortUrlController::class, "show"])->name("api.short_url_show");
                 Route::post("/batch", [ShortUrlController::class, "store"])->name("api.short_url_create");
             });
         });

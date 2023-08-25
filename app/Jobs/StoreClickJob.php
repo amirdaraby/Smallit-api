@@ -2,11 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\Api\AgentController;
 use App\Models\Click;
+use App\Models\ShortUrl;
 use App\Traits\UserAgent;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,12 +15,15 @@ class StoreClickJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, UserAgent;
 
-    private $userAgent, $uid, $shortUrlId;
-    public function __construct($userAgent, $uid, $shortUrlId)
+    private ?string $uid;
+    private ?string $userAgent;
+    private ShortUrl $shortUrl;
+
+    public function __construct(?string $userAgent, ?string $uid, ShortUrl $shortUrl)
     {
         $this->userAgent = $userAgent;
         $this->uid = $uid;
-        $this->shortUrlId = $shortUrlId;
+        $this->shortUrl = $shortUrl;
     }
 
     /**
@@ -33,12 +35,11 @@ class StoreClickJob implements ShouldQueue
         Click::create(
             [
                 "uid" => $this->uid,
-                "shorturl_id" => $this->shortUrlId,
+                "short_url_id" => $this->shortUrl->id,
                 "browser" => $this->getBrowser($this->userAgent),
                 "platform" => $this->getOs($this->userAgent),
                 "user_agent" => $this->userAgent,
             ]
         );
-
     }
 }

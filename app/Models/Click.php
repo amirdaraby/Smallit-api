@@ -15,7 +15,7 @@ class Click extends Model
 
     protected $guarded = ['id'];
 
-    public function shorturl() : BelongsTo
+    public function shortUrl() : BelongsTo
     {
         return $this->belongsTo(ShortUrl::class, "shorturl_id");
     }

@@ -31,7 +31,7 @@ return new class extends Migration
                     "BlackBerry",
                     "Windows Phone",
                     "Mobile",
-                    ])->nullable(false);
+                    ])->nullable(true);
 
                 $table->enum("browser", ["Samsung Browser",
                     "Edge",
@@ -45,7 +45,7 @@ return new class extends Migration
                     ])->nullable(true);
 
 
-                $table->string("user_agent");
+                $table->string("user_agent")->nullable(false);
 
                 $table->timestamp("created_at")->default(now()->carbonize());
         });

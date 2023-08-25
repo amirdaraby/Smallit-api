@@ -15,7 +15,7 @@ class ShortUrlTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_short_urls_create_returns_auth_error()
+    public function testShortUrlCreateReturnsAuthError(): void
     {
         User::factory()->count(10);
         $response = $this->postJson(route("api.short_url_create"));
@@ -23,7 +23,7 @@ class ShortUrlTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_short_urls_create_returns_validation_error()
+    public function testShortUrlCreateReturnsValidationError(): void
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->postJson(route("api.short_url_create"));
@@ -31,7 +31,7 @@ class ShortUrlTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_short_url_create_returns_successful()
+    public function testShortUrlCreateReturnsSuccessResponse(): void
     {
         $user = User::factory()->create();
 
@@ -48,7 +48,7 @@ class ShortUrlTest extends TestCase
         $response->assertStatus(202);
     }
 
-    public function test_short_urls_create_creates_batch()
+    public function testShortUrlCreateCreatesBatch(): void
     {
         $user = User::factory()->create();
 
@@ -67,17 +67,132 @@ class ShortUrlTest extends TestCase
         $this->assertSame("mamad_batch", $batch->name);
     }
 
-    public function test_short_url_job_handles()
+    public function testShortUrlJobHandlesSuccessfully(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->create();
         $amount = 100000;
 
-        ShortUrlJob::dispatch($url->id ,$amount, $user->id, $batch);
+        ShortUrlJob::dispatch($url->id, $amount, $user->id, $batch);
 
         $this->assertDatabaseCount(ShortUrl::class, 100000);
     }
 
+    public function testAllShortUrlsReturnsAuthenticationError(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
+        ShortUrlJob::dispatch($url->id, 10, $user->id, $batch);
 
+        $response = $this->getJson(route("api.short_urls_all"));
+        $response->assertUnauthorized();
+    }
+
+    public function testAllShortUrlsReturnsNotFoundWhenUserHasNoShortUrls(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.short_urls_all"));
+        $response->assertNotFound();
+    }
+
+    public function testAllShortUrlsReturnsSuccessResponse(): void
+    {
+
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
+        ShortUrlJob::dispatch($url->id, 10, $user->id, $batch);
+
+        $response = $this->actingAs($user)->getJson(route("api.short_urls_all"));
+        $response->assertOk();
+    }
+
+    public function testAllShortUrlsReturnsPaginatedSuccessResponse(): void
+    {
+
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
+        ShortUrlJob::dispatch($url->id, 10, $user->id, $batch);
+
+        $response = $this->actingAs($user)->getJson(route("api.short_urls_all"));
+        $response->assertOk()->assertJsonStructure([
+            "data" => [
+                'current_page',
+                'data' => [],
+                'first_page_url',
+                'from',
+                'last_page',
+                'last_page_url',
+                'links' => [],
+                'next_page_url',
+                'path',
+                'per_page',
+                'prev_page_url',
+                'to',
+                'total',
+            ],
+        ]);
+    }
+
+    public function testShortUrlShowReturnsAuthenticationError(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 1)->create();
+        $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "kdjfn")->create();
+
+        $response = $this->getJson(route("api.short_url_show", ["id" => $shortUrl->id]));
+        $response->assertUnauthorized();
+    }
+
+    public function testShortUrlShowReturnsAuthorizationErrorAsNotFound(): void
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 1)->create();
+        $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "kdjfn")->create();
+
+        $response = $this->actingAs($user2)->getJson(route("api.short_url_show", ["id" => $shortUrl->id]));
+        $response->assertNotFound();
+    }
+
+    public function testShortUrlShowReturnsNotFoundWhenUserDoesntHaveTheShortUrl(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.short_url_show", ["id" => 1]));
+        $response->assertNotFound();
+    }
+
+    public function testShortUrlShowReturnsSuccessResponse(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 1)->create();
+        $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "kdjfn")->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.short_url_show", ["id" => $shortUrl->id]));
+        $response->assertOk();
+    }
+
+    public function testShortUrlShowReturnsShortUrlWithUrlAndTotalClicksOnSuccessResponse(): void
+    {
+
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 1)->create();
+        $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "kdjfn")->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.short_url_show", ["id" => $shortUrl->id]));
+        $response->assertJsonStructure([
+            "data" => [
+                "url", "total_clicks"
+            ]
+        ]);
+    }
 }

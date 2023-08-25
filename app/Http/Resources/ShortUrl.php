@@ -14,6 +14,9 @@ class ShortUrl extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'short_url' => $this->short_url,
+            'url' => $this->url
+        ];
     }
 }
