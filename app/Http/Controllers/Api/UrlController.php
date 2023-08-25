@@ -13,6 +13,7 @@ class UrlController extends BaseController
 {
     protected UrlRepository $urlRepository;
     protected ShortUrlRepository $shortUrlRepository;
+
     public function __construct(UrlRepository $urlRepository, ShortUrlRepository $shortUrlRepository)
     {
         $this->urlRepository = $urlRepository;
@@ -57,7 +58,8 @@ class UrlController extends BaseController
         return responseError("server error, try again later", 500, null);
     }
 
-    public function showShortUrls(int $id){
+    public function showShortUrls(int $id) :object
+    {
 
         $url = $this->urlRepository->findById($id);
 
@@ -71,4 +73,13 @@ class UrlController extends BaseController
         return responseSuccess($shortUrls, "all short urls of url: $url->url", 200);
     }
 
+    public function search(Request $request) :object
+    {
+
+        $urls = $this->urlRepository->searchByUrl($request->get("q"), \auth()->user()->id);
+
+        if ($urls->isEmpty())
+            return responseError("Not Found", 404);
+        return responseSuccess($urls->toArray(), "search results");
+    }
 }

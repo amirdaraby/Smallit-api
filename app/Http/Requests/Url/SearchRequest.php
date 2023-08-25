@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Url;
 
+use App\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\Validator;
 
 class SearchRequest extends BaseRequest
@@ -24,7 +25,7 @@ class SearchRequest extends BaseRequest
     public function rules()
     {
         return [
-            "search" => "required|string"
+            "q" => "required|string|min:3"
         ];
     }
     protected function failedValidation(Validator $validator)

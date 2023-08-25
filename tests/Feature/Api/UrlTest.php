@@ -164,7 +164,7 @@ class UrlTest extends TestCase
         $response->assertOk();
     }
 
-    public function testUrlShowShortUrlsReturnsNotFoundError() : void
+    public function testUrlShowShortUrlsReturnsNotFoundError(): void
     {
         $user = User::factory()->create();
 
@@ -173,7 +173,7 @@ class UrlTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testUrlShowShortUrlsReturnsAuthenticationError() : void
+    public function testUrlShowShortUrlsReturnsAuthenticationError(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -195,7 +195,8 @@ class UrlTest extends TestCase
     }
 
 
-    public function testUrlShowShortUrlsReturnsNotFoundErrorWhenUrlHasNoShortUrls(): void{
+    public function testUrlShowShortUrlsReturnsNotFoundErrorWhenUrlHasNoShortUrls(): void
+    {
 
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -205,7 +206,7 @@ class UrlTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testUrlShowShortUrlsReturnsSuccessResponse() : void
+    public function testUrlShowShortUrlsReturnsSuccessResponse(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -217,7 +218,7 @@ class UrlTest extends TestCase
         $response->assertOk();
     }
 
-    public function testUrlShowShortUrlsReturnsValidJsonStructureOnSuccessResponse() : void
+    public function testUrlShowShortUrlsReturnsValidJsonStructureOnSuccessResponse(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -231,6 +232,60 @@ class UrlTest extends TestCase
             ],
             "message"
         ]);
+    }
+
+    public function testUrlSearchReturnsAuthenticationError(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->getJson(route("api.url_search", ["q" => $url->url]));
+        $response->assertUnauthorized();
+    }
+
+    public function testUrlSearchReturnsNotFoundWhenThereIsNoResult(): void
+    {
+        $user = User::factory()->create();
+        Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_search", ["q" => "cxvnbbsdjf"]));
+        $response->assertNotFound();
+    }
+
+    public function testUrlSearchResponseSuccessWhenQueryStringHasFirstCharacters(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_search", ["q" => substr($url->url, 0, 3)]));
+        $response->assertOk();
+    }
+
+    public function testUrlSearchResponseSuccessWhenQueryStringHasLastCharacters(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_search", ["q" => substr($url->url, strlen($url->url) - 3, 3)]));
+        $response->assertOk();
+    }
+
+    public function testUrlSearchResponseSuccessWhenQueryStringHasSomeCharactersInMiddleOfString(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_search", ["q" => substr($url->url, strlen($url->url) / 2, 3)]));
+        $response->assertOk();
+    }
+
+    public function testUrlSearchResponseSuccessWhenQueryStringHasAllCharacters(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+
+        $response = $this->actingAs($user)->getJson(route("api.url_search", ["q" => $url->url]));
+        $response->assertOk();
     }
 
 }

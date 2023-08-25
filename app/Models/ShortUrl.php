@@ -17,15 +17,8 @@ class ShortUrl extends Model
 
     public function url(): BelongsTo
     {
-
         return $this->belongsTo(Url::class, "url_id");
     }
-
-    public function getRouteKeyName(): string
-    {
-        return "short_url";
-    }
-
 
     public function user(): BelongsTo
     {

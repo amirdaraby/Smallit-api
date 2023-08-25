@@ -2,30 +2,42 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\SearchRequest;
 use App\Http\Requests\ShortUrl\ShortUrlRequest;
+use App\Http\Requests\Url\SearchRequest;
 use App\Jobs\ShortUrlJob;
-use App\Jobs\StoreClickJob;
 use App\Models\ShortUrl;
 use App\Models\Url;
 use App\Repositories\BatchRepository;
+use App\Repositories\ShortUrlRepository;
 use App\Repositories\UrlRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 
 class ShortUrlController extends BaseController
 {
 
     protected UrlRepository $urlRepository;
     protected BatchRepository $batchRepository;
+    protected ShortUrlRepository $shortUrlRepository;
 
-    public function __construct(UrlRepository $urlRepository, BatchRepository $batchRepository)
+    public function __construct(UrlRepository $urlRepository, BatchRepository $batchRepository, ShortUrlRepository $shortUrlRepository)
     {
         $this->urlRepository = $urlRepository;
         $this->batchRepository = $batchRepository;
+        $this->shortUrlRepository = $shortUrlRepository;
     }
 
+
+    public function all(): object
+    {
+        $urls = $this->shortUrlRepository->findByUserId(\auth()->user()->id);
+
+        if ($urls->isEmpty())
+            return responseError("user has no short urls", 404);
+        return responseSuccess($urls->toArray(), "user's all short urls");
+    }
 
     public function store(ShortUrlRequest $request): object
     {
@@ -47,14 +59,12 @@ class ShortUrlController extends BaseController
         return responseError("there is a problem in server", 500);
     }
 
+    public function show(int $id){
+        $shortUrl = $this->shortUrlRepository->findByIdWithLongUrlAndClicksAmount($id);
 
-    public function show(ShortUrl $url, Request $request): object
-    {
+        Gate::authorize("shorturl-owner", $shortUrl);
 
-        StoreClickJob::dispatch($request->header("user-agent"), $request->header("uid"), $url->id);
-
-        $url = $url->url->url;
-        return $this->success($url, "ok");
+        return responseSuccess($shortUrl, "short url's data with url and clicks amount");
     }
 
     public function urlStats(Url $id)
@@ -85,17 +95,5 @@ class ShortUrlController extends BaseController
         if (count($data) == 0)
             return $this->error("Not found");
         return $this->success(["data" => $data, "count" => $count], "data found");
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-
-    public function destroy(ShortUrl $url)
-    {
-        return $url;
     }
 }
