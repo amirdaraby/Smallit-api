@@ -24,7 +24,7 @@ class ClickController extends BaseController
         $shortUrl = $this->shortUrlRepository->findByShortUrlWithLongUrlOrFail($shortUrl);
 
         if ($request->header("user-agent"))
-        StoreClickJob::dispatch($request->header("user-agent"), $request->header("uid"), $shortUrl);
+        StoreClickJob::dispatch($request->header("user-agent"), $request->header("uid"), $shortUrl)->onQueue("clicks");
 
         return responseSuccess(ShortUrl::make($shortUrl), "short url clicked", 200);
     }
