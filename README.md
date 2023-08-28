@@ -30,6 +30,12 @@ The default `www_user` is set as `1000(www-data)` in `.env.example`. feel free t
 4. Recommended: Logout after this action 
 
 ---
+## Production
+Since there is some differences between developement and production in configurations, Smallit has a Specific Docker for production named `docker-compose.prod.yml` in root directory.
+
+run it using the following command: `compose -f docker-compose.prod.yml up --build --force-recreate` 
+
+---
 ## Installation
 
 You can use the `make` command to install Smallit, or just do things manually
