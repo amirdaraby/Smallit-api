@@ -5,6 +5,7 @@ namespace App\Jobs;
 
 use App\Models\Batch;
 use App\Models\ShortUrl;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 class ShortUrlJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels, Queueable;
 
     public $url, $amount, $user, $batch;
 

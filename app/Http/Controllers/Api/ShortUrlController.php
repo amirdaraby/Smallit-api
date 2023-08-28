@@ -53,7 +53,7 @@ class ShortUrlController extends BaseController
         $batch = $this->batchRepository->create(compact("url_id", "user_id", "amount", "name"));
 
         if ($batch) {
-            ShortUrlJob::dispatch($url_id, $amount, $user_id, $batch);
+            ShortUrlJob::dispatch($url_id, $amount, $user_id, $batch)->onQueue("short-urls");
             return responseSuccess(null, "your request to create $amount short urls for $url successfully Added to queue", 202);
         }
         return responseError("there is a problem in server", 500);
