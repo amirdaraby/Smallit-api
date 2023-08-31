@@ -8,6 +8,9 @@ use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \App\Http\Controllers\Api\UserController
+ */
 class UserTest extends TestCase
 {
     use RefreshDatabase;

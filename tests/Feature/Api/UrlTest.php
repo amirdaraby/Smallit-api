@@ -10,6 +10,9 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \App\Http\Controllers\Api\UrlController
+ */
 class UrlTest extends TestCase
 {
 

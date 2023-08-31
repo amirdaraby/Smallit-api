@@ -16,3 +16,5 @@ yarn-error.log
 docker/mysql
 public/vendor
 *.log
+*.bak
+public/test-coverage-report

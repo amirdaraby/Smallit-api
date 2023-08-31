@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Repositories\BatchRepository;
 use App\Repositories\ShortUrlRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Utils\Response;
 
 class BatchController extends BaseController
 {
@@ -17,46 +19,46 @@ class BatchController extends BaseController
         $this->shortUrlRepository = $shortUrlRepository;
     }
 
-    public function all(): object
+    public function all(): JsonResponse
     {
         $batches = $this->batchRepository->findByUserId(Auth::id());
 
-        return !$batches->isEmpty() ? responseSuccess($batches->toArray(), "all batches created by user", 200)
-            : responseError("this user doesn't have any batches", 404);
+        return !$batches->isEmpty() ? Response::success($batches->toArray(), "all batches created by user", 200)
+            : Response::error("this user doesn't have any batches", 404);
     }
 
-    public function show(int $id): object
+    public function show(int $id): JsonResponse
     {
         $batch = $this->batchRepository->findById($id);
 
         Gate::authorize("batch-owner", $batch);
 
-        return responseSuccess($batch->toArray(), "batch's data", 200);
+        return Response::success($batch->toArray(), "batch's data", 200);
     }
 
-    public function delete(int $id): object
+    public function delete(int $id): JsonResponse
     {
         $batch = $this->batchRepository->findById($id);
 
         Gate::authorize("batch-owner", $batch);
 
         if ($batch->status != "success")
-            return responseError("cannot delete a unsuccessful batch", 400);
+            return Response::error("cannot delete a unsuccessful batch", 400);
 
-        return $this->batchRepository->delete($id) ? responseSuccess(true, "batch deleted successfully", 200)
-            : responseError("batch delete failed", 500, false);
+        return $this->batchRepository->delete($id) ? Response::success(true, "batch deleted successfully", 200)
+            : Response::error("batch delete failed", 500, false);
 
     }
 
-    public function showShortUrls(int $id): object{
+    public function showShortUrls(int $id): JsonResponse{
         $batch = $this->batchRepository->findById($id);
         Gate::authorize("batch-owner", $batch);
 
         if ($batch->status != "success")
-            return responseError("please wait until this batch completes creating short urls", 409, null);
+            return Response::error("please wait until this batch completes creating short urls", 409, null);
 
         $batchWithShortUrls = $this->shortUrlRepository->findByBatchId($batch->id);
 
-        return responseSuccess($batchWithShortUrls, "short urls of batch", 200);
+        return Response::success($batchWithShortUrls, "short urls of batch", 200);
     }
 }

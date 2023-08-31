@@ -56,28 +56,6 @@ Route::group(["prefix" => "/v1"], function () {
             });
         });
 
-        Route::group(["prefix" => "/url"], function () {
-
-            Route::resource("/", ShortUrlController::class)->except(["show"]);
-            Route::get("/{id}/stats", [ShortUrlController::class, "urlStats"])->name("api.url_stats");
-            Route::post("/search", [ShortUrlController::class, "search"])->name("api.search");
-            Route::get("/header", [ShortUrlController::class, "header"])->name("api.header");
-            Route::post("/find", [ShortUrlController::class, "find"])->name("api.find");
-
-        });
-
-
-        Route::group(["prefix" => "/views"], function () {
-
-            Route::get("/{url}", [\App\Http\Controllers\Api\ViewController::class, "index"])->name("api.view");
-            Route::get("/{url}/browsers/", [\App\Http\Controllers\Api\ViewController::class, "getBrowsers"])->name("api.view_browsers");
-            Route::get("/{url}/platforms/", [\App\Http\Controllers\Api\ViewController::class, "getPlatforms"])->name("api.view_platforms");
-            Route::get("/{url}/count", [\App\Http\Controllers\Api\ViewController::class, "getShorturlWithCount"])->name("api.view_count");
-            Route::get("/{url}/all", [\App\Http\Controllers\Api\ViewController::class, "getAll"])->name("api.view_all");
-            Route::get("/{url}/all/{from}/{to}", [\App\Http\Controllers\Api\ViewController::class, "getByTime"]);
-
-        });
-
     });
 
 

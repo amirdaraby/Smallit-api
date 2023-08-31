@@ -1,11 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Traits;
 
 use App\Traits\UserAgent;
 use Tests\TestCase;
 
-
+/**
+ * @covers App\Traits\UserAgent
+ */
 class UserAgentTraitTest extends TestCase
 {
     use UserAgent;

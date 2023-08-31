@@ -4,34 +4,36 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Repositories\UserRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Utils\Response;
 
 class UserController extends BaseController
 {
 
-    private $repository;
+    private UserRepository $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {
-        $this->repository = $userRepository;
+        $this->userRepository = $userRepository;
     }
 
-    public function show()
+    public function show(): JsonResponse
     {
-        $user = $this->repository->findById(Auth::id(), ["name", "email"])->getAttributes();
+        $user = $this->userRepository->findById(Auth::id(), ["name", "email"])->getAttributes();
 
-        return responseSuccess(["user" => $user], "User Data");
+        return Response::success(["user" => $user], "User Data");
     }
 
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request): JsonResponse
     {
-        $updated = $this->repository->update(Auth::id(), $request->validationData());
-        return responseSuccess(["updated" => $updated] , "User Updated", 202);
+        $updated = $this->userRepository->update(Auth::id(), $request->validationData());
+        return Response::success(["updated" => $updated], "User Updated", 202);
     }
 
-    public function delete()
+    public function delete(): JsonResponse
     {
-        $deleted = $this->repository->delete(Auth::id());
-        return responseSuccess(["deleted" => $deleted], "User Deleted", 202);
+        $deleted = $this->userRepository->delete(Auth::id());
+        return Response::success(["deleted" => $deleted], "User Deleted", 202);
     }
 }

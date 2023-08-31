@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Repositories\ShortUrlRepository;
 use App\Repositories\UrlRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
-
+use App\Utils\Response;
 class UrlController extends BaseController
 {
     protected UrlRepository $urlRepository;
@@ -20,7 +21,7 @@ class UrlController extends BaseController
         $this->shortUrlRepository = $shortUrlRepository;
     }
 
-    public function all(Request $request): object
+    public function all(Request $request): JsonResponse
     {
 
         $page = $request->get("page") ?? 1;
@@ -31,21 +32,21 @@ class UrlController extends BaseController
         });
 
         if ($urls->isEmpty())
-            return responseSuccess(null, "this user doesn't have any urls", 404);
+            return Response::success(null, "this user doesn't have any urls", 404);
 
-        return responseSuccess($urls, "all urls");
+        return Response::success($urls, "all urls");
     }
 
-    public function show(int $id): object
+    public function show(int $id): JsonResponse
     {
         $url = $this->urlRepository->findById($id);
 
         Gate::authorize("url-owner", $url);
 
-        return responseSuccess($url->toArray(), "url found successfully", 200);
+        return Response::success($url->toArray(), "url found successfully", 200);
     }
 
-    public function delete(int $id): object
+    public function delete(int $id): JsonResponse
     {
         $url = $this->urlRepository->findById($id);
 
@@ -54,11 +55,11 @@ class UrlController extends BaseController
         $deleted = $this->urlRepository->delete($url->id);
 
         if ($deleted)
-            return responseSuccess($deleted, "url and url's deleted successfully", 200);
-        return responseError("server error, try again later", 500, null);
+            return Response::success($deleted, "url and url's deleted successfully", 200);
+        return Response::error("server error, try again later", 500, null);
     }
 
-    public function showShortUrls(int $id) :object
+    public function showShortUrls(int $id) :JsonResponse
     {
 
         $url = $this->urlRepository->findById($id);
@@ -68,18 +69,18 @@ class UrlController extends BaseController
         $shortUrls = $this->shortUrlRepository->findByUrlId($url->id);
 
         if ($shortUrls->isEmpty())
-            return responseError("this url has no short urls", 404);
+            return Response::error("this url has no short urls", 404);
 
-        return responseSuccess($shortUrls, "all short urls of url: $url->url", 200);
+        return Response::success($shortUrls, "all short urls of url: $url->url", 200);
     }
 
-    public function search(Request $request) :object
+    public function search(Request $request) :JsonResponse
     {
 
         $urls = $this->urlRepository->searchByUrl($request->get("q"), \auth()->user()->id);
 
         if ($urls->isEmpty())
-            return responseError("Not Found", 404);
-        return responseSuccess($urls->toArray(), "search results");
+            return Response::error("Not Found", 404);
+        return Response::success($urls->toArray(), "search results");
     }
 }
