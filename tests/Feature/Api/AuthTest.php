@@ -9,6 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
 
+/**
+ * @covers \App\Http\Controllers\Api\Auth\AuthController
+ */
 class AuthTest extends TestCase
 {
     use RefreshDatabase;

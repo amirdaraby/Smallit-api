@@ -11,6 +11,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
+/**
+ * @covers \App\Http\Controllers\Api\ShortUrlController
+ * @uses \App\Jobs\ShortUrlJob
+ */
 class ShortUrlTest extends TestCase
 {
     use RefreshDatabase;
@@ -67,6 +71,9 @@ class ShortUrlTest extends TestCase
         $this->assertSame("mamad_batch", $batch->name);
     }
 
+    /**
+     * @covers \App\Jobs\ShortUrlJob
+     */
     public function testShortUrlJobHandlesSuccessfully(): void
     {
         $user = User::factory()->create();

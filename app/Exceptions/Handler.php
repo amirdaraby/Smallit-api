@@ -9,7 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Spatie\FlareClient\Http\Exceptions\NotFound;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Http\Controllers\Api\BaseController;
+use App\Utils\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -55,27 +55,27 @@ class Handler extends ExceptionHandler
             return;
 
         $this->renderable(function (NotFoundHttpException $e) {
-            return responseError("Not found", 404);
+            return Response::error("Not found", 404);
         });
 
         $this->renderable(function (MethodNotAllowedHttpException $e) {
-            return responseError("Method not allowed", 405);
+            return Response::error("Method not allowed", 405);
         });
 
         $this->renderable(function (NotFound $e) {
-            return responseError("Record not found", 404);
+            return Response::error("Record not found", 404);
         });
 
         $this->renderable(function (AuthorizationException $e) {
-            return responseError("Forbidden", 403);
+            return Response::error("Forbidden", 403);
         });
 
         $this->renderable(function (AuthenticationException $e) {
-            return responseError("Unauthorized", 401);
+            return Response::error("Unauthorized", 401);
         });
 
         $this->renderable(function (QueryException $e) {
-            return responseError("Server error", 500);
+            return Response::error("Server error", 500);
         });
     }
 

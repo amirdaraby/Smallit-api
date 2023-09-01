@@ -31,7 +31,7 @@ The default `www_user` is set as `1000(www-data)` in `.env.example`. feel free t
 
 ---
 ## Production
-Since there is some differences between developement and production in configurations, Smallit has a Specific Docker for production named `docker-compose.prod.yml` in root directory.
+Since there is some differences between development and production in configurations, Smallit has a Specific Docker for production named `docker-compose.prod.yml` in root directory.
 
 run it using the following command: `compose -f docker-compose.prod.yml up --build --force-recreate` 
 
@@ -62,6 +62,13 @@ You can use the `make` command to install Smallit, or just do things manually
 
 ---
 
+## Tests (with Coverage)
+#### You can run tests to make sure App works fine. 
+run `php artisan test --coverage` to see the tests result and coverage and generate an HTML Result in `public/test-coverage-report`.
+
+Or Run `vendor/bin/phpunit --coverage-html=/your/path` to place the HTML result anywhere you want.
+
+---
 ## Horizon 
 
 Currently, Smallit is using Horizon to manage Queues.

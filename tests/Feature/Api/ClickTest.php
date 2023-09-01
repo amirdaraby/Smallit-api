@@ -12,10 +12,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
+
+/**
+ * @covers \App\Http\Controllers\Api\ClickController
+ */
 class ClickTest extends TestCase
 {
     use RefreshDatabase;
-
     public function testClickAsApiReturnsNotFoundError(): void
     {
         $response = $this->getJson(route("api.click", ["short_url" => "abc"]));

@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Utils\Response;
 
 class AuthController extends BaseController
 {
@@ -24,8 +25,8 @@ class AuthController extends BaseController
             $response['token'] = $auth->createToken('LaravelSanctumAuth')->plainTextToken;
             $response['name'] = $auth->name;
             $response['email'] = $auth->email;
-            return responseSuccess($response, "User login", 202);
-        } else return responseError("Email or Password is invalid", 401);
+            return Response::success($response, "User login", 202);
+        } else return Response::error("Email or Password is invalid", 401);
     }
 
 
@@ -38,7 +39,7 @@ class AuthController extends BaseController
         $response['name'] = $user->name;
         $response['email'] = $user->email;
 
-        return responseSuccess($response, 'User registered', 201);
+        return Response::success($response, 'User registered', 201);
 
     }
 
@@ -46,7 +47,7 @@ class AuthController extends BaseController
     {
         $deleted = Auth::user()->tokens()->delete();
         if ($deleted)
-            return responseSuccess([], "logged out !");
+            return Response::success([], "logged out !");
     }
 
 }

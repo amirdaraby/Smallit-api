@@ -47,3 +47,8 @@ COPY docker-fpm.ini /usr/local/etc/php/conf.d/docker-fpm.ini
 RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
     && docker-php-ext-enable redis
+
+#### xdebug ####
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
