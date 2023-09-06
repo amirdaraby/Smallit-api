@@ -28,7 +28,7 @@ class ShortUrl extends Model
 
     public function clicks(): HasMany
     {
-        return $this->hasMany(Click::class, "shorturl_id");
+        return $this->hasMany(Click::class, "short_url_id");
     }
 
     public function batch(): BelongsTo {

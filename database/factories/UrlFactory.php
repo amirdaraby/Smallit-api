@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +17,7 @@ class UrlFactory extends Factory
     public function definition(): array
     {
         return [
-            "url" => "https://rockstargames.com",
+            "url" => $this->faker->url(),
             "created_at" => $this->faker->date()
         ];
     }
