@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\ShortUrlController;
-use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BatchController;
+use App\Http\Controllers\Api\Clicks\ClickController;
+use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\UrlController;
-use App\Http\Controllers\Api\ClickController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\Clicks\UniqueClickController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +54,24 @@ Route::group(["prefix" => "/v1"], function () {
                 Route::get("/all",[ShortUrlController::class, "all"])->name("api.short_urls_all");
                 Route::get("/{id}",[ShortUrlController::class, "show"])->name("api.short_url_show");
                 Route::post("/batch", [ShortUrlController::class, "store"])->name("api.short_url_create");
+
+                Route::group(["prefix" => "/{shortUrlId}/clicks"], function (){
+
+                    Route::get("",[ClickController::class, "index"])->name("api.click_index");
+                    Route::get("/all",[ClickController::class, "all"])->name("api.click_all");
+                    Route::get("/browsers",[ClickController::class, "browsers"])->name("api.click_browsers");
+                    Route::get("/platforms",[ClickController::class, "platforms"])->name("api.click_platforms");
+
+                    Route::group(["prefix" => "/unique"], function (){
+                        Route::get("/all", [UniqueClickController::class, "all"])->name("api.click_unique_all");
+                        Route::get("/browsers", [UniqueClickController::class, "browsers"])->name("api.click_unique_browsers");
+                        Route::get("/platforms", [UniqueClickController::class, "platforms"])->name("api.click_unique_platforms");
+                    });
+                });
+            });
+
+            Route::group(["prefix" => "/clicks"], function (){
+                Route::get("/{id}", [ClickController::class, "show"])->name("api.click_show");
             });
         });
 
