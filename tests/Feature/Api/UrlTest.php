@@ -215,6 +215,8 @@ class UrlTest extends TestCase
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 2)->create();
+        ShortUrlJob::dispatch($url->id, 2, $user->id, $batch);
 
         $response = $this->actingAs($user)->getJson(route("api.url_short_urls", ["id" => $url->id]));
 

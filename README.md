@@ -64,14 +64,14 @@ You can use the `make` command to install Smallit, or just do things manually
 
 ## Tests (with Coverage)
 #### You can run tests to make sure App works fine. 
-run `php artisan test --coverage-text` to see the tests result and coverage and generate an HTML Result in `public/test-coverage-report`.
+run `dockker exec -t smallit_php bash -c "php artisan test --coverage-text"` to see the tests result and coverage and generate an HTML Result in `public/test-coverage-report`.
 
 ---
 ## Horizon 
 
 Smallit is using Horizon to manage Queues.
 
-run `docker exec -t smallit_php -c "php artisan horizon"` command in PHP container to start queues working.
+run `docker exec -t smallit_php bash -c "php artisan horizon"` command in PHP container to start queues working.
 
 ---
 ## Supervisord
@@ -79,12 +79,12 @@ starting Horizon can be automized using Supervisor, which is presented in [Produ
 
 ---
 ## Swagger Api Documentation
-run `docker exec -t smallit_php -c "php artisan l5-swagger:generate"`, Api documentations will generate in route `/api/documentation`.
+run `docker exec -t smallit_php bash -c "php artisan l5-swagger:generate"`, Api documentations will generate in route `/api/documentation`.
 
 ---
 ## Counting Views (Clicks)
 
-check `apps/Http/Controllers/Api/UrlShortenerController`, `show` method
+check `apps/Http/Controllers/Api/Clicks/ClickController`, `click` method
 
 #### when you are using api to get **Long Url** :
 
