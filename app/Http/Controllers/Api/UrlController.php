@@ -249,9 +249,7 @@ class UrlController extends BaseController
      *
      *    ),
      *    ),
-     *
      * )
-     *
      */
     public function showShortUrls(int $id): JsonResponse
     {
