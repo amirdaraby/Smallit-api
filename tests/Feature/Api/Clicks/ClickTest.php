@@ -21,8 +21,20 @@ class ClickTest extends TestCase
 
     public function testClickAsApiReturnsNotFoundError(): void
     {
-        $response = $this->getJson(route("api.click", ["short_url" => "abc"]));
+        $response = $this->getJson(route("api.click", ["shortUrl" => "abc"]));
         $response->assertNotFound();
+    }
+
+    public function testClickAsApiReturnsLongUrlInSuccessResponse(): void
+    {
+        $user = User::factory()->create();
+        $url = Url::factory()->for($user)->create();
+        $batch = Batch::factory()->for($user)->for($url)->set("amount", 10)->create();
+        $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "abcde")->create();
+
+        $response = $this->getJson(route("api.click", ["shortUrl" => $shortUrl->short_url]))->getOriginalContent();
+
+        $this->assertEquals($url->url, $response["data"]["long_url"]);
     }
 
     public function testClickAsApiReturnsSuccessResponse(): void
@@ -33,7 +45,7 @@ class ClickTest extends TestCase
         $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "abcde")->create();
 
         Queue::fake();
-        $response = $this->getJson(route("api.click", ["short_url" => $shortUrl->short_url]));
+        $response = $this->getJson(route("api.click", ["shortUrl" => $shortUrl->short_url]));
         $response->assertOk();
     }
 
@@ -45,7 +57,7 @@ class ClickTest extends TestCase
         $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "abcde")->create();
 
         Queue::fake();
-        $response = $this->getJson(route("api.click", ["short_url" => $shortUrl->short_url]));
+        $response = $this->getJson(route("api.click", ["shortUrl" => $shortUrl->short_url]));
         Queue::assertPushed(StoreClickJob::class);
         $response->assertOk();
     }
@@ -58,7 +70,7 @@ class ClickTest extends TestCase
         $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "abcde")->create();
 
         Queue::fake();
-        $response = $this->getJson(route("api.click", ["short_url" => $shortUrl->short_url]), ["user-agent" => null]);
+        $response = $this->getJson(route("api.click", ["shortUrl" => $shortUrl->short_url]), ["user-agent" => null]);
         Queue::assertNotPushed(StoreClickJob::class);
         $response->assertOk();
     }
@@ -76,7 +88,7 @@ class ClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksIndexReturnsNotFoundErrorWhenUserIsUnauthorized(): void
+    public function testClicksIndexReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -86,7 +98,7 @@ class ClickTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.click_index", ["shortUrlId" => $shortUrl->id]));
 
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksIndexReturnsSuccessResponse(): void
@@ -139,7 +151,7 @@ class ClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksAllReturnsAuthorizationErrorAsNotFound(): void
+    public function testClicksAllReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -148,7 +160,7 @@ class ClickTest extends TestCase
         $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->create();
         Click::factory()->for($shortUrl)->createMany(5);
         $response = $this->actingAs($user2)->getJson(route("api.click_all", ["shortUrlId" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksAllReturnsNotFoundWhenShortUrlDidntExists(): void
@@ -216,7 +228,7 @@ class ClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksShowReturnsAuthorizationErrorAsNotFound()
+    public function testClicksShowReturnsForbiddenErrorWhenUserIsNotClickOwner()
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -226,7 +238,7 @@ class ClickTest extends TestCase
         $click = Click::factory()->for($shortUrl)->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.click_show", ["id" => $click->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksShowReturnsSuccessResponse(): void
@@ -254,7 +266,7 @@ class ClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksBrowsersReturnsAuthorizationErrorAsNotFound(): void
+    public function testClicksBrowsersReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -264,7 +276,7 @@ class ClickTest extends TestCase
         Click::factory()->for($shortUrl)->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.click_browsers", ["shortUrlId" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksBrowserReturnsNotFoundErrorWhenShortUrlHasNoClicks(): void
@@ -297,7 +309,7 @@ class ClickTest extends TestCase
         $batch = Batch::factory()->for($user)->for($url)->create();
         $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->create();
         Click::factory()->for($shortUrl)->set("uid", "1")->set("browser", "Chrome")->createMany(6);
-        Click::factory()->for($shortUrl)->set("uid", "1")->set("browser","Firefox")->createMany(5);
+        Click::factory()->for($shortUrl)->set("uid", "1")->set("browser", "Firefox")->createMany(5);
 
         $response = $this->actingAs($user)->getJson(route("api.click_browsers", ["shortUrlId" => $shortUrl->id]))->getOriginalContent();
         $this->assertEquals("Chrome", $response["data"][0]["browser"]);
@@ -322,7 +334,7 @@ class ClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksPlatformsReturnsAuthorizationErrorAsNotFound(): void
+    public function testClicksPlatformsReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -332,7 +344,7 @@ class ClickTest extends TestCase
         Click::factory()->for($shortUrl)->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.click_platforms", ["shortUrlId" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksPlatformsReturnsNotFoundErrorWhenShortUrlHasNoClicks(): void

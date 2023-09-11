@@ -24,7 +24,7 @@ Route::group(["prefix" => "/v1"], function () {
 
     Route::post("/login", [AuthController::class, "login"])->name("api.login");
     Route::post("/register", [AuthController::class, "register"])->name("api.register");
-    Route::get("/click/{short_url}", [ClickController::class, "click"])->name("api.click");
+    Route::get("/click/{shortUrl}", [ClickController::class, "click"])->name("api.click");
 
     Route::middleware(["auth:sanctum"])->group(function () {
 

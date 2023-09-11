@@ -143,7 +143,7 @@ class AuthTest extends TestCase
 
         $response = $this->deleteJson(route("api.logout"), headers: ["Authorization" => "Bearer " . $token]);
 
-        $response->assertStatus(200);
+        $response->assertAccepted();
     }
 
     public function test_logout_deletes_personal_access_token()

@@ -57,7 +57,7 @@ class UrlTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testUrlShowReturnsAuthorizationErrorAsNotFound(): void
+    public function testUrlShowReturnsForbiddenErrorWhenUserIsNotUrlOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -65,7 +65,7 @@ class UrlTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.url_show", ["id" => $url->id]));
 
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testUrlShowReturnsSuccessfulResponse(): void
@@ -96,14 +96,14 @@ class UrlTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testUrlDeleteReturnsAuthorizationErrorAsNotFound(): void
+    public function testUrlDeleteReturnsForbiddenErrorWhenUserIsNotUrlOwner(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
 
         $user2 = User::factory()->create();
         $response = $this->actingAs($user2)->deleteJson(route("api.url_delete", ["id" => $url->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testUrlDeleteCanDeleteUrl(): void
@@ -125,7 +125,7 @@ class UrlTest extends TestCase
 
         $response = $this->actingAs($user)->deleteJson(route("api.url_delete", ["id" => $url->id]));
 
-        $response->assertOk();
+        $response->assertAccepted();
     }
 
     public function testUrlDeleteDeletesBatchesOnCascade(): void
@@ -157,16 +157,6 @@ class UrlTest extends TestCase
         $this->assertDatabaseCount(ShortUrl::class, 0);
     }
 
-    public function testUrlDeleteReturnsSuccessResponse(): void
-    {
-        $user = User::factory()->create();
-        $url = Url::factory()->for($user)->create();
-
-        $response = $this->actingAs($user)->deleteJson(route("api.url_delete", ["id" => $url->id]));
-
-        $response->assertOk();
-    }
-
     public function testUrlShowShortUrlsReturnsNotFoundError(): void
     {
         $user = User::factory()->create();
@@ -186,7 +176,7 @@ class UrlTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testUrlShowShortUrlsReturnsAuthorizationErrorAsNotFound(): void
+    public function testUrlShowShortUrlsReturnsForbiddenErrorWhenUserIsNotUrlOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -194,7 +184,7 @@ class UrlTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.url_short_urls", ["id" => $url->id]));
 
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
 

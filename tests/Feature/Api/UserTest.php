@@ -38,10 +38,8 @@ class UserTest extends TestCase
         $response->assertJsonStructure([
             "status",
             "data" => [
-                "user" => [
                     "name",
                     "email"
-                ]
             ]
         ]);
     }
@@ -174,9 +172,7 @@ class UserTest extends TestCase
 
         $response->assertJsonStructure([
             "status",
-            "data" => [
-                "updated"
-            ],
+            "data",
             "message"
         ]);
     }
@@ -221,9 +217,7 @@ class UserTest extends TestCase
 
         $response->assertJsonStructure([
             "status",
-            "data" => [
-                "deleted"
-            ],
+            "data" ,
             "message"
         ]);
     }

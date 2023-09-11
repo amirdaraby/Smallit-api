@@ -156,7 +156,7 @@ class ShortUrlTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testShortUrlShowReturnsAuthorizationErrorAsNotFound(): void
+    public function testShortUrlShowReturnsForbiddenErrorWhenUserIsNotShortUrlOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -165,7 +165,7 @@ class ShortUrlTest extends TestCase
         $shortUrl = ShortUrl::factory()->for($user)->for($url)->for($batch)->set("short_url", "kdjfn")->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.short_url_show", ["id" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testShortUrlShowReturnsNotFoundWhenUserDoesntHaveTheShortUrl(): void
