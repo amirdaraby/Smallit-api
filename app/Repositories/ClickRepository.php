@@ -20,9 +20,9 @@ class ClickRepository extends BaseRepository
             ->fromSub("select * from clicks where short_url_id = ?", "clicks_data")->setBindings([$shortUrlId])->first();
     }
 
-    public function findByShortUrlId(int $shortUrlId)
+    public function findByShortUrlId(int $shortUrlId, array $columns = ["*"])
     {
-        return $this->model->query()->select("*")->where("short_url_id", $shortUrlId)->orderByDesc("created_at")->paginate(10);
+        return $this->model->query()->select($columns)->where("short_url_id", $shortUrlId)->orderByDesc("created_at")->paginate(10);
     }
 
     public function findTotalBrowsersInsightByShortUrlId(int $shortUrlId)
@@ -44,9 +44,10 @@ class ClickRepository extends BaseRepository
     }
 
 
-    public function findAllUniqueClicksByShortUrl(int $shortUrlId){
+    public function findAllUniqueClicksByShortUrl(int $shortUrlId, array $columns = ["*"])
+    {
         return $this->model->query()
-            ->select("*")
+            ->select($columns)
             ->where("short_url_id", $shortUrlId)
             ->whereNotNull("uid")
             ->orderByDesc("created_at")

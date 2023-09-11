@@ -31,7 +31,7 @@ class UniqueClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksUniqueAllReturnsAuthorizationErrorAsNotFound(): void
+    public function testClicksUniqueAllReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -41,7 +41,7 @@ class UniqueClickTest extends TestCase
         Click::factory()->for($shortUrl)->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.click_unique_all", ["shortUrlId" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksUniqueAllReturnsNotFoundErrorWhenShortUrlHasNoClicks(): void
@@ -109,7 +109,7 @@ class UniqueClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksUniqueBrowsersReturnsAuthorizationErrorAsNotFound(): void
+    public function testClicksUniqueBrowsersReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -119,7 +119,7 @@ class UniqueClickTest extends TestCase
         Click::factory()->for($shortUrl)->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.click_unique_browsers", ["shortUrlId" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksUniqueBrowsersReturnsNotFoundWhenShortUrlHasNoClicks(): void
@@ -196,7 +196,7 @@ class UniqueClickTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testClicksUniquePlatformsReturnsAuthorizationErrorAsNotFound(): void
+    public function testClicksUniquePlatformsReturnsForbiddenErrorWhenUserIsNotClickOwner(): void
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -206,7 +206,7 @@ class UniqueClickTest extends TestCase
         Click::factory()->for($shortUrl)->create();
 
         $response = $this->actingAs($user2)->getJson(route("api.click_unique_platforms", ["shortUrlId" => $shortUrl->id]));
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testClicksUniquePlatformsReturnsNotFoundWhenShortUrlHasNoClicks(): void

@@ -26,7 +26,7 @@ class ShortUrlRequest extends BaseRequest
     public function rules()
     {
         return [
-            "url" => ["required", "url", "regex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/"],
+            "url" => ["required", "url", "regex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[A-Z-a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/"],
             "amount" => ["required", "int", "between:1,100000", "integer"],
             "batch_name" => ["string", "between:1,255"]
         ];

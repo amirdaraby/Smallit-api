@@ -31,19 +31,16 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define("batch-owner", function (User $user, Batch $batch){
-             return $user->id === $batch->user_id ? Response::allow() : Response::denyAsNotFound();
+             return $user->id === $batch->user_id ? Response::allow() : Response::deny();
         });
 
         Gate::define("shorturl-owner", function (User $user , ShortUrl $shortUrl){
-            return $user->id === $shortUrl->user_id ? Response::allow() : Response::denyAsNotFound();
+            return $user->id === $shortUrl->user_id ? Response::allow() : Response::deny();
         });
 
         Gate::define("url-owner", function (User $user , Url $url){
-            return $user->id === $url->user_id ? Response::allow() : Response::denyAsNotFound();
+            return $user->id === $url->user_id ? Response::allow() : Response::deny();
         });
 
-        Gate::define("reach" , function (User $user  , ShortUrl $shortUrl ){
-            return $shortUrl->user_id === $user->id ? Response::allow() : Response::denyAsNotFound();
-        });
     }
 }

@@ -60,7 +60,7 @@ class BatchTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testBatchShowReturnsUnauthorizedErrorAsNotFound(): void
+    public function testBatchShowReturnsForbiddenErrorWhenUserIsNotBatchOwner(): void
     {
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
@@ -70,7 +70,7 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.batch_show", ["id" => 5]));
 
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testBatchShowReturnsNotFound(): void
@@ -128,7 +128,7 @@ class BatchTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testBatchDeleteReturnsUnauthorizedErrorAsNotFound(): void
+    public function testBatchDeleteReturnsForbiddenErrorWhenUserIsNotBatchOwner(): void
     {
 
         $user = User::factory()->create();
@@ -139,7 +139,7 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user2)->deleteJson(route("api.batch_delete", ["id" => 5]));
 
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testBatchDeleteReturnsSuccessResponse(): void
@@ -151,7 +151,7 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user)->deleteJson(route("api.batch_delete", ["id" => $batch->id]));
 
-        $response->assertOk();
+        $response->assertAccepted();
     }
 
     public function testBatchDeleteCanDeleteBatchFromDatabase(): void
@@ -219,7 +219,7 @@ class BatchTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testBatchShowShortUrlsReturnUnauthorizedErrorAsNotFound(){
+    public function testBatchShowShortUrlsReturnsForbiddenErrorWhenUserIsNotBatchOwner(){
         $user = User::factory()->create();
         $url = Url::factory()->for($user)->create();
         $batch = Batch::factory()->for($user)->for($url)->create();
@@ -227,7 +227,7 @@ class BatchTest extends TestCase
 
         $response = $this->actingAs($user2)->getJson(route("api.batch_short_urls", ["id" => $batch->id]));
 
-        $response->assertNotFound();
+        $response->assertForbidden();
     }
 
     public function testBatchShowShortUrlsReturnConflictErrorWhenBatchIsNotComplete(){

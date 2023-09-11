@@ -16,7 +16,7 @@ class ShortUrl extends JsonResource
     {
         return [
             'short_url' => $this->short_url,
-            'url' => $this->url
+            'long_url' => $this->long_url
         ];
     }
 }

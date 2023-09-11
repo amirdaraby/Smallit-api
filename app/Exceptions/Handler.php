@@ -77,6 +77,11 @@ class Handler extends ExceptionHandler
         $this->renderable(function (QueryException $e) {
             return Response::error("Server error", 500);
         });
+
+        $this->renderable(function (\TypeError $e){
+            return Response::error("Not found", 404);
+        });
+
     }
 
 }

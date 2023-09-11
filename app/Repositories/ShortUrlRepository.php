@@ -33,7 +33,7 @@ class ShortUrlRepository extends BaseRepository
 
     public function findByShortUrlWithLongUrlOrFail(string $shortUrl)
     {
-        return $this->model->query()->select(["id", "short_url", DB::raw("(select url from urls where urls.id = short_urls.url_id) as url")])->where("short_url", "=", $shortUrl)->firstOrFail();
+        return $this->model->query()->select(["id", "short_url", DB::raw("(select url from urls where urls.id = short_urls.url_id) as long_url")])->where("short_url", "=", $shortUrl)->firstOrFail();
     }
 
     public function findByIdWithLongUrlAndClicksAmount(int $id)
