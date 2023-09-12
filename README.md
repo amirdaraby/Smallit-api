@@ -1,11 +1,20 @@
 # Small it
 
+![tests](https://github.com/amirdaraby/Smallit-api/actions/workflows/tests.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Table of contents
+- [Introduction](#introduction)
+- [Install](#installation) ([Installation notes](#installation-notes))
+- [Tests](#tests)
+- [Queues](#queues)
+- [API Documentation](#api-documentation)
+- [Contribution](#contribution)
+
 ## Introduction
 
 **Smallit** is an open source api based
-web application which I have developed with Laravel.
-
-my target is having an easy to use url shortener with most features.
+web application, my target is having an easy to use url shortener with most features..
 
 ---
 
@@ -30,12 +39,7 @@ The default `www_user` is set as `1000(www-data)` in `.env.example`. feel free t
 4. Recommended: Logout after this action 
 
 ---
-## Production
-Since there is some differences between development and production in configurations, Smallit has a Specific Docker for production named `docker-compose.prod.yml` in root directory.
 
-run it using the following command: `compose -f docker-compose.prod.yml up --build --force-recreate` 
-
----
 ## Installation
 
 You can use the `make` command to install Smallit, or just do things manually
@@ -43,6 +47,13 @@ You can use the `make` command to install Smallit, or just do things manually
 - ### Makefile
 
   Just run `make` command
+
+---
+
+- ### Production
+Since there is some differences between development and production in configurations, Smallit has a Specific Docker for production named `docker-compose.prod.yml` in root directory.
+
+run it using the following command: `compose -f docker-compose.prod.yml up --build --force-recreate`
 
 ---
 
@@ -59,67 +70,41 @@ You can use the `make` command to install Smallit, or just do things manually
 3. `php artisan migrate` (run migrations)
 4. `php artisan horizon:install` (publish horizon configuration and assets)
 5. `php artisan test` (make sure app works fine)
+6. `php artisan l5-swagger:generate` (generates API documentations)
+7. `php artisan horizon` (start horizon)
+---
+
+## Tests
+- ### PHPUnit
+  #### You can run tests to make sure App works fine. 
+  run `dockker exec -t smallit_php bash -c "vendor/bin/phpunit --coverage-text"` to see the tests result and coverage and generate an HTML Result in `public/test-coverage-report`.
+
+---
+## Queues
+
+- ### Horizon 
+
+   Smallit is using Horizon to manage Queues.
+
+   run `docker exec -t smallit_php bash -c "php artisan horizon"` to start queues working.
+
+
+- ### Supervisor
+   starting Horizon can be automized using Supervisor, which is available in [Production](#production) Docker environment.
+
+---
+## API Documentation
+
+- ### Swagger
+   run `docker exec -t smallit_php bash -c "php artisan l5-swagger:generate"`, Api documentations will generate in route `/api/documentation`.
 
 ---
 
-## Tests (with Coverage)
-#### You can run tests to make sure App works fine. 
-run `dockker exec -t smallit_php bash -c "php artisan test --coverage-text"` to see the tests result and coverage and generate an HTML Result in `public/test-coverage-report`.
+## Contribution
+The project has a separate contribution file. Please adhere to the steps listed in the separate contributions [file](.github/CONTRIBUTING.md)
 
----
-## Horizon 
+### Contact
+You can reach me on [Linkedin @amirdaraby](https://www.linkedin.com/in/amirdaraby/)
 
-Smallit is using Horizon to manage Queues.
-
-run `docker exec -t smallit_php bash -c "php artisan horizon"` command in PHP container to start queues working.
-
----
-## Supervisord
-starting Horizon can be automized using Supervisor, which is presented in [Production](#production) Docker environment.
-
----
-## Swagger Api Documentation
-run `docker exec -t smallit_php bash -c "php artisan l5-swagger:generate"`, Api documentations will generate in route `/api/documentation`.
-
----
-## Counting Views (Clicks)
-
-check `apps/Http/Controllers/Api/Clicks/ClickController`, `click` method
-
-#### when you are using api to get **Long Url** :
-
-your Http Request can have a header with Key: **uid** with Value of a unique id.
-
-I suggest [fingerprint js]
-to generate **uid**
-
-[fingerprint js]:https://github.com/fingerprintjs/fingerprintjs
-
-this is how I make the request to redirect user to Long url with counting clicks (in client side)
-
-     <script>
-        let queryString = '{{$url}}' // $url is short url (querystring)
-        const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3')
-            .then(FingerprintJS => FingerprintJS.load())
-
-        fpPromise
-            .then(fp => fp.get())
-            .then(result => {
-
-                // This is the visitor identifier:
-                return result.visitorId
-            }).then(function (visitorId) {
-
-       
-            fetch(`http://localhost:8088/api/v1/show/${queryString}`, { 
-                method: "GET",
-                headers: {
-                    'uid': visitorId,
-                    'user_agent': navigator.userAgent
-                }
-            }).then(response => response.json()).then(function (data) {
-                // console.log(data.data)
-                data.data ? window.location.replace(`${data.data}`.replace('_var_', `${queryString}`)+'&') : document.getElementById("error").innerHTML = "Not Found";
-            })
-         })
-     </script>
+### License
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](LICENSE.md)
