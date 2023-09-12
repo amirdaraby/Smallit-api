@@ -12,7 +12,7 @@ use OpenApi\Annotations as OA;
  * @OA\OpenApi(
  *  @OA\Info(
  *      title="Smallit Api",
- *      version="1",
+ *      version="1.0.0-alpha",
  *      description="Smallit Api Swagger Documentation",
  *      @OA\Contact(
  *          email="amir2002.d@gmail.com",
