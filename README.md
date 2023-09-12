@@ -1,6 +1,6 @@
 # Small it
 
-![tests](https://github.com/amirdaraby/Smallit-api/actions/workflows/tests.yml/badge.svg)
+![Laravel tests](https://github.com/amirdaraby/Smallit-api/actions/workflows/laravel.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of contents
