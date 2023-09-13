@@ -49,6 +49,14 @@ class ClickController extends BaseController
      *     example="Q1ddv9mE2JcxA1",
      *     ),
      *
+     *     @OA\Parameter(
+     *     name="user-agent",
+     *     description="make sure you send USER's user agent to server, otherwise no click will be count",
+     *     required=false,
+     *     in="header",
+     *     example="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+     *     ),
+     *
      *     @OA\Response(response="404", ref="#components/responses/NotFound"),
      *
      *     @OA\Response(response="200", description="returns short url and url in response and counts a new click in background",

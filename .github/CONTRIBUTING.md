@@ -19,8 +19,8 @@ Before you start contributing, please take a moment to review this guide, which 
 - Clone your forked repository to your local machine
 - Create a new branch for your contribution:
 `git checkout -b feature/your-feature` or if you are fixing a bug use `git checkout -b bugfix/your-bugfix`
-- Make your changes and commit them:
-- Push your changes to your forked repository:
+- Make your changes and commit them
+- Push your changes to your forked repository
 
 
 ## How to Contribute
