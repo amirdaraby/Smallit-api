@@ -32,7 +32,6 @@ class ClickController extends BaseController
      *     summary="Click",
      *     description="dispatches a click and returns short url and url",
      *     operationId="clickShortUrl",
-     *     security={{"bearerAuth":{}}},
      *
      *     @OA\PathParameter(
      *     name="short_url",
